@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\CashIn;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class CashinController extends Controller
+{
+    public function index()
+    {
+        $cashin = CashIn::all();
+        return view('cashin.index', compact('cashin'));
+    }
+    public function create()
+    {
+        // $orders = OrderItem::all(); where payments.order_id.amount != order_items.price
+        $orders = DB::table('orders')
+            ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->whereColumn('order_items.price', '!=', 'payments.amount')
+            ->select('orders.*', 'order_items.*', 'payments.*') // You can specify the columns you need
+            ->get();
+
+        return view('cashin.create', compact('orders'));
+    }
+    public function store(Request $request)
+    {
+        $cashin = new CashIn;
+        $cashin->cashin = $request->cashin;
+        $cashin->save();
+        return redirect()->route('cashin.index');
+    }
+    public function edit($id)
+    {
+        $cashin = CashIn::find($id);
+        return view('cashin.edit', compact('cashin'));
+    }
+    public function update(Request $request, $id)
+    {
+        $cashin = CashIn::find($id);
+        $cashin->cashin = $request->cashin;
+        $cashin->save();
+        return redirect()->route('cashin.index');
+    }
+    public function destroy($id)
+    {
+        $cashin = CashIn::find($id);
+        $cashin->delete();
+        return redirect()->route('cashin.index');
+    }
+}
