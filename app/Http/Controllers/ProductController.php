@@ -23,7 +23,7 @@ class ProductController extends Controller
         if ($request->search) {
             $products = $products->where('name', 'LIKE', "%{$request->search}%");
         }
-        $products = $products->latest()->paginate(10);
+        $products = $products->latest()->paginate(25);
         if (request()->wantsJson()) {
             return ProductResource::collection($products);
         }

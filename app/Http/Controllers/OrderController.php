@@ -17,7 +17,7 @@ class OrderController extends Controller
         if ($request->end_date) {
             $orders = $orders->where('created_at', '<=', $request->end_date . ' 23:59:59');
         }
-        $orders = $orders->with(['items', 'payments', 'customer'])->latest()->paginate(10);
+        $orders = $orders->with(['items', 'payments', 'customer'])->latest()->paginate(20);
 
         $total = $orders->map(function ($i) {
             return $i->total();

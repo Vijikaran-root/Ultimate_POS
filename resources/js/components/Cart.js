@@ -201,6 +201,9 @@ class Cart extends Component {
             }
         });
     }
+    handlePrint() {
+        window.print();
+    }
     render() {
         const { cart, products, customers, barcode } = this.state;
         return (
@@ -289,6 +292,23 @@ class Cart extends Component {
                             {window.APP.currency_symbol} {this.getTotal(cart)}
                         </div>
                     </div>
+                    <div className="row">
+                        <div className="col">Cash Paid:</div>
+                        <div className="col text-right">
+                            {window.APP.currency_symbol}{" "}
+                            <input type="text" className="form-control" />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">Balance:</div>
+                        <div className="col text-right">
+                            {window.APP.currency_symbol}{" "}
+                            {(
+                                this.getTotal(cart) - this.getTotal(cart)
+                            ).toFixed(2)}
+                        </div>
+                    </div>
+
                     <div className="row">
                         <div className="col">
                             <button
