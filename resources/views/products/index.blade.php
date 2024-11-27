@@ -6,6 +6,8 @@
 <a href="{{route('products.create')}}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Product</a>
 <!-- export button to get product details from database table -->
 <a href="{{ route('export-products') }}" class="btn btn-primary">Export Products</a>
+<!-- import button to get product details from database table -->
+<a href="{{ route('import-products') }}" class="btn btn-primary">Import Products</a>
 
 @endsection
 @section('css')

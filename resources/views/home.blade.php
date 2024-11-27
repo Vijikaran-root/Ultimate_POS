@@ -57,8 +57,8 @@
             <!-- small box -->
             <div class="small-box bg-purple">
                 <div class="inner">
-                    <h3>{{$products_count}}</h3>
-                    <p>Total Products</p>
+                    <h3>{{config('settings.currency_symbol')}} {{number_format($total_pending_due,2)}}</h3>
+                    <p>Total Pending Due</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-dolly-flatbed"></i>

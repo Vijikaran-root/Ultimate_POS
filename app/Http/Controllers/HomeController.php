@@ -66,9 +66,14 @@ class HomeController extends Controller
         $inventory_value = Product::all()->sum(function ($product) {
             return $product->quantity * $product->cost;
         });
-
-
-
+        //total pending due
+        $total = $orders->map(function ($i) {
+            return $i->total();
+        })->sum();
+        $receivedAmount = $orders->map(function ($i) {
+            return $i->receivedAmount();
+        })->sum();
+        $total_pending_due = $total - $receivedAmount;
 
         return view('home', compact(
             'orders',
@@ -81,7 +86,8 @@ class HomeController extends Controller
             'monthly_orders',
             'daily_orders',
             'inventory_balance',
-            'inventory_value'
+            'inventory_value',
+            'total_pending_due'
         ));
     }
 }

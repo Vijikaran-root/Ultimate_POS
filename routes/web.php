@@ -22,6 +22,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/settings', [SettingController::class, 'store'])->name('settings.store');
     Route::resource('products', ProductController::class);
     Route::get('/export-products', [ProductController::class, 'exportProducts'])->name('export-products');
+    Route::get('/import-products', [ProductController::class, 'showImportForm'])->name('import-products');
+    Route::post('/import-products', [ProductController::class, 'import'])->name('import-products.post');
     Route::resource('customers', CustomerController::class);
     Route::resource('orders', OrderController::class);
     Route::resource('cashin', CashinController::class);

@@ -159,7 +159,7 @@ class ProductController extends Controller
             $handle = fopen('php://output', 'w');
 
             // Write headers
-            fputcsv($handle, ['ID', 'Name', 'Description', 'Price']);
+            fputcsv($handle, ['ID', 'Name', 'Description', 'Barcode', 'Cost', 'Price', 'Quantity', 'Status']);
 
             // Write product data
             foreach ($products as $product) {
@@ -167,11 +167,61 @@ class ProductController extends Controller
                     $product->id,
                     $product->name,
                     $product->description,
-                    $product->price
+                    $product->barcode,
+                    $product->cost,
+                    $product->price,
+                    $product->quantity,
+                    $product->status
                 ]);
             }
 
             fclose($handle);
         }, 200, $headers);
+    }
+    public function showImportForm()
+    {
+        return view('products.import-products');
+    }
+
+    public function import(Request $request)
+    {
+        // Validate file upload
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+
+        $file = $request->file('csv_file');
+
+        // Open and parse CSV
+        if (($handle = fopen($file->getPathname(), 'r')) !== false) {
+            $header = null;
+            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                // Skip header row
+                if (!$header) {
+                    $header = $row;
+                    continue;
+                }
+
+                // Map CSV rows to database columns
+                $data = array_combine($header, $row);
+
+                // Insert or update the product
+                Product::updateOrCreate(
+                    ['id' => $data['ID']], // Unique column to prevent duplicates
+                    [
+                        'name' => $data['Name'],
+                        'description' => $data['Description'],
+                        'barcode' => $data['Barcode'],
+                        'cost' => $data['Cost'],
+                        'price' => $data['Price'],
+                        'quantity' => $data['Quantity'],
+                        'status' => $data['Status'],
+                    ]
+                );
+            }
+            fclose($handle);
+        }
+
+        return redirect()->back()->with('success', 'Products imported successfully.');
     }
 }
