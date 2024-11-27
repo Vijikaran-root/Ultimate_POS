@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProductController extends Controller
 {
@@ -142,5 +143,35 @@ class ProductController extends Controller
         return response()->json([
             'success' => true
         ]);
+    }
+    public function exportProducts(Request $request)
+    {
+        $products = Product::all();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="products.csv"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'no-store, must-revalidate',
+        ];
+
+        return response()->stream(function () use ($products) {
+            $handle = fopen('php://output', 'w');
+
+            // Write headers
+            fputcsv($handle, ['ID', 'Name', 'Description', 'Price']);
+
+            // Write product data
+            foreach ($products as $product) {
+                fputcsv($handle, [
+                    $product->id,
+                    $product->name,
+                    $product->description,
+                    $product->price
+                ]);
+            }
+
+            fclose($handle);
+        }, 200, $headers);
     }
 }

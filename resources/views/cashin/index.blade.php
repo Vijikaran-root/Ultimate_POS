@@ -39,16 +39,23 @@
                     <th>Order ID</th>
                     <th>Cash In</th>
                     <th>Created At</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($cashin as $cash)
                 <tr>
                     <td>{{$cash->id}}</td>
-                    <td>{{$cash->customer->name}}</td>
+                    <td>{{$cash->orders->customer_id}}</td>
                     <td>{{$cash->order_id}}</td>
                     <td>{{$cash->amount}}</td>
                     <td>{{$cash->created_at}}</td>
+                    <td>
+                        <a href="{{ route('cashin.edit', $cash->id) }}" class="btn btn-primary"><i
+                                class="fas fa-edit"></i></a>
+                        <button class="btn btn-danger btn-delete" data-url="{{route('cashin.destroy', $cash)}}"><i
+                                class="fas fa-trash"></i></button>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

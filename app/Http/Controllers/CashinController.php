@@ -21,16 +21,29 @@ class CashinController extends Controller
         $orders = DB::table('orders')
             ->join('order_items', 'orders.id', '=', 'order_items.order_id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->whereColumn('order_items.price', '!=', 'payments.amount')
-            ->select('orders.*', 'order_items.*', 'payments.*') // You can specify the columns you need
+            ->select(
+                'orders.id',
+                'orders.customer_id',
+                'payments.amount',
+                DB::raw('SUM(order_items.price) as total_price')
+            )
+            ->groupBy('orders.id', 'orders.customer_id', 'payments.amount') // Include all non-aggregated columns
+            ->havingRaw('SUM(order_items.price) != payments.amount')
             ->get();
+
+
 
         return view('cashin.create', compact('orders'));
     }
     public function store(Request $request)
     {
         $cashin = new CashIn;
-        $cashin->cashin = $request->cashin;
+        $order = Order::find($request->order_id);
+        $cashin->amount = $request->amount;
+        $cashin->order_id = $request->order_id;
+        $payment = $order->payments()->where('order_id', $request->order_id)->first();
+        $payment->amount = $payment->amount + $request->amount;
+        $payment->save();
         $cashin->save();
         return redirect()->route('cashin.index');
     }

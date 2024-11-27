@@ -18,9 +18,9 @@
                     <option value="">Select Order</option>
                     @foreach ($orders as $order)
                     <option value="{{ $order->id }}" {{ old('order_id') == $order->id ? 'selected' : '' }}>
-                        Order ID = {{ $order->id }} - Customer ID{{ $order->customer_id }} - Order Value =
-                        {{ number_format($order->price,2) }} -
-                        Balance Due = {{ $order->price - $order->amount }}
+                        Order ID = {{ $order->id }} - Customer ID = {{ $order->customer_id }} - Order Value =
+                        {{ number_format($order->total_price,2) }} -
+                        Balance Due = {{ $order->total_price - $order->amount }}
                     </option>
                     @endforeach
                 </select>

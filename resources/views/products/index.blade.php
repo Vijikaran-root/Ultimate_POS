@@ -4,6 +4,9 @@
 @section('content-header', 'Product Management')
 @section('content-actions')
 <a href="{{route('products.create')}}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Product</a>
+<!-- export button to get product details from database table -->
+<a href="{{ route('export-products') }}" class="btn btn-primary">Export Products</a>
+
 @endsection
 @section('css')
 <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
