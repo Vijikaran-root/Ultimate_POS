@@ -46,7 +46,7 @@
                 @foreach ($cashin as $cash)
                 <tr>
                     <td>{{$cash->id}}</td>
-                    <td>{{$cash->orders->customer_id}}</td>
+                    <td>{{$cash->getCustomerName()}}</td>
                     <td>{{$cash->order_id}}</td>
                     <td>{{$cash->amount}}</td>
                     <td>{{$cash->created_at}}</td>

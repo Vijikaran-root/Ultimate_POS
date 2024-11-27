@@ -20,4 +20,14 @@ class CashIn extends Model
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+    public function getCustomerName()
+    {
+        //get customer name from customer table for requested order
+        $customer = Customer::where('id', $this->orders->customer_id)->first();
+        return $customer->first_name . ' ' . $customer->last_name;
+    }
 }
