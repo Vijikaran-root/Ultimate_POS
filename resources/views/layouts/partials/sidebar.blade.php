@@ -42,6 +42,12 @@
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
+                    <a href="{{ route('suppliers.index') }}" class="nav-link {{ activeSegment('suppliers') }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>Suppliers</p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview">
                     <a href="{{ route('cart.index') }}" class="nav-link {{ activeSegment('cart') }}">
                         <i class="nav-icon fas fa-cash-register"></i>
                         <p>POS System</p>
@@ -51,6 +57,12 @@
                     <a href="{{ route('orders.index') }}" class="nav-link {{ activeSegment('orders') }}">
                         <i class="nav-icon fas fa-chart-line"></i>
                         <p>Orders</p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('inventory.index') }}" class="nav-link {{ activeSegment('inventory') }}">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <p>Inventory</p>
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
