@@ -16,4 +16,9 @@ class Product extends Model
         'quantity',
         'status'
     ];
+    //inventory
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
 }

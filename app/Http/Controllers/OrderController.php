@@ -6,6 +6,7 @@ use App\Http\Requests\OrderStoreRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -32,28 +33,81 @@ class OrderController extends Controller
 
     public function store(OrderStoreRequest $request)
     {
-        $order = Order::create([
-            'customer_id' => $request->customer_id,
-            'user_id' => $request->user()->id,
-        ]);
+        DB::beginTransaction();
 
-        $cart = $request->user()->cart()->get();
-        foreach ($cart as $item) {
-            $order->items()->create([
-                'price' => $item->price * $item->pivot->quantity,
-                'quantity' => $item->pivot->quantity,
-                'product_id' => $item->id,
+        try {
+            // Create the order
+            $order = Order::create([
+                'customer_id' => $request->customer_id,
+                'user_id' => $request->user()->id,
             ]);
-            $item->quantity = $item->quantity - $item->pivot->quantity;
-            $item->save();
+
+            // Retrieve cart items
+            $cart = $request->user()->cart()->get();
+
+            foreach ($cart as $item) {
+                // Create order items
+                $order->items()->create([
+                    'price' => $item->price * $item->pivot->quantity,
+                    'quantity' => $item->pivot->quantity,
+                    'product_id' => $item->id,
+                ]);
+            }
+
+            // Deduct stock using FIFO
+            $this->deductfifostocks($order);
+
+            // Clear the user's cart
+            $request->user()->cart()->detach();
+
+            // Record the payment
+            $order->payments()->create([
+                'amount' => $request->amount,
+                'user_id' => $request->user()->id,
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('orders.index')->with('success', 'Order created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()]);
         }
-        $request->user()->cart()->detach();
-        $order->payments()->create([
-            'amount' => $request->amount,
-            'user_id' => $request->user()->id,
-        ]);
-        return 'success';
     }
+
+    //deductfifostocks functions
+    public function deductfifostocks(Order $order)
+    {
+        // Retrieve order items with related products and inventories
+        $order_items = $order->items()->with(['product', 'product.inventories'])->get();
+
+        foreach ($order_items as $item) {
+            $remainingQuantity = $item->quantity;
+
+            // Deduct from inventories using FIFO logic
+            foreach ($item->product->inventories()->orderBy('created_at')->get() as $inventory) {
+                if ($remainingQuantity <= 0) {
+                    break;
+                }
+
+                if ($inventory->quantity_on_hand >= $remainingQuantity) {
+                    $inventory->quantity_on_hand -= $remainingQuantity;
+                    $inventory->save();
+                    $remainingQuantity = 0;
+                } else {
+                    $remainingQuantity -= $inventory->quantity_on_hand;
+                    $inventory->quantity_on_hand = 0;
+                    $inventory->save();
+                }
+            }
+
+            // Update the product's total stock
+            $item->product->quantity -= $item->quantity;
+            $item->product->save();
+        }
+    }
+
+
     public function show(Order $order)
     {
         //order_items table data for the requested order

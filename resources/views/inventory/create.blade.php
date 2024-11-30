@@ -18,7 +18,7 @@
                     <option value="">Select Product</option>
                     @foreach ($products as $product)
                     <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
-                        {{ $product->name }}
+                        {{ $product->name }} - {{ $product->quantity }} units
                     </option>
                     @endforeach
                 </select>
