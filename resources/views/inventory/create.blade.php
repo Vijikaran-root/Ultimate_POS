@@ -1,99 +1,70 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Customer')
-@section('content-header', 'Create Customer')
+@section('title', 'Create Inventory')
+@section('content-header', 'Create Inventory')
 
 @section('content')
 
-    <div class="card">
-        <div class="card-body">
+<div class="card">
+    <div class="card-body">
 
-            <form action="{{ route('customers.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-
-                <div class="form-group">
-                    <label for="first_name">First Name</label>
-                    <input type="text" name="first_name" class="form-control @error('first_name') is-invalid @enderror"
-                           id="first_name"
-                           placeholder="First Name" value="{{ old('first_name') }}">
-                    @error('first_name')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="last_name">Last Name</label>
-                    <input type="text" name="last_name" class="form-control @error('last_name') is-invalid @enderror"
-                           id="last_name"
-                           placeholder="Last Name" value="{{ old('last_name') }}">
-                    @error('last_name')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" name="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                           placeholder="Email" value="{{ old('email') }}">
-                    @error('email')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Contact Number</label>
-                    <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" id="phone"
-                           placeholder="Contact Number" value="{{ old('phone') }}">
-                    @error('phone')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" name="address" class="form-control @error('address') is-invalid @enderror"
-                           id="address"
-                           placeholder="Address" value="{{ old('address') }}">
-                    @error('address')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="avatar">Avatar</label>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="avatar" id="avatar">
-                        <label class="custom-file-label" for="avatar">Choose File</label>
-                    </div>
-                    @error('avatar')
-                    <span class="invalid-feedback" role="alert">
+        <form action="{{ route('inventory.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <!-- product id drop down menue -->
+            <div class="form-group">
+                <label for="product_id">Product</label>
+                <select name="product_id" class="form-control @error('product_id') is-invalid @enderror"
+                    id="product_id">
+                    <option value="">Select Product</option>
+                    @foreach ($products as $product)
+                    <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
+                        {{ $product->name }}
+                    </option>
+                    @endforeach
+                </select>
+                @error('product_id')
+                <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
-                    @enderror
-                </div>
+                @enderror
+            </div>
+
+            <!-- reorder_level -->
+            <div class="form-group">
+                <label for="reorder_level">Reorder Level</label>
+                <input type="number" name="reorder_level"
+                    class="form-control @error('reorder_level') is-invalid @enderror" id="reorder_level"
+                    placeholder="Reorder Level" value="{{ old('reorder_level') }}">
+                @error('reorder_level')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+            <!-- cost -->
+            <div class="form-group">
+                <label for="cost">Cost</label>
+                <input type="number" name="cost" class="form-control @error('cost') is-invalid @enderror" id="cost"
+                    placeholder="Cost" value="{{ old('cost') }}">
+                @error('cost')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
 
 
-                <button class="btn btn-success btn-block btn-lg" type="submit">Submit</button>
-            </form>
-        </div>
+            <button class="btn btn-success btn-block btn-lg" type="submit">Submit</button>
+        </form>
     </div>
+</div>
 @endsection
 
 @section('js')
-    <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
-    <script>
-        $(document).ready(function () {
-            bsCustomFileInput.init();
-        });
-    </script>
+<script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        bsCustomFileInput.init();
+    });
+</script>
 @endsection

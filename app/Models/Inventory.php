@@ -15,4 +15,8 @@ class Inventory extends Model
         'reorder_level',
         'cost'
     ];
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

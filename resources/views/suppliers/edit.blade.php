@@ -35,7 +35,7 @@
             </div>
             <div class="form-group">
                 <label for="company_name">Company Name</label>
-                <input type="text" name="last_name" class="form-control @error('company_name') is-invalid @enderror"
+                <input type="text" name="company_name" class="form-control @error('company_name') is-invalid @enderror"
                     id="company_name" placeholder="Company Name"
                     value="{{ old('company_name', $supplier->company_name) }}">
                 @error('company_name')
@@ -77,8 +77,8 @@
 @section('js')
 <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 <script>
-$(document).ready(function() {
-    bsCustomFileInput.init();
-});
+    $(document).ready(function() {
+        bsCustomFileInput.init();
+    });
 </script>
 @endsection
