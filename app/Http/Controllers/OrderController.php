@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderStoreRequest;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -52,5 +53,25 @@ class OrderController extends Controller
             'user_id' => $request->user()->id,
         ]);
         return 'success';
+    }
+    public function show(Order $order)
+    {
+        //order_items table data for the requested order
+        $order_items = OrderItem::where('order_id', $order->id)->with('product')->get();
+        $orders = Order::where('id', $order->id)->get();
+        $total = $orders->map(function ($i) {
+            return $i->total();
+        })->sum();
+        $receivedAmount = $orders->map(function ($i) {
+            return $i->receivedAmount();
+        })->sum();
+        $balance = $receivedAmount - $total;
+        return view('orders.show', compact('order_items', 'total', 'receivedAmount', 'balance'));
+    }
+    //delete order
+    public function delete(Order $order)
+    {
+        $order->delete();
+        return redirect()->back();
     }
 }

@@ -3,11 +3,12 @@
 @section('title', 'Orders List')
 @section('content-header', 'Order List')
 @section('content-actions')
-    <a href="{{route('cart.index')}}" class="btn btn-success">Open POS</a>
+<a href="{{route('cart.index')}}" class="btn btn-success">Open POS</a>
 @endsection
 
 @section('content')
-<div class="card"><!-- Log on to codeastro.com for more projects -->
+<div class="card">
+    <!-- Log on to codeastro.com for more projects -->
     <div class="card-body">
         <div class="row">
             <!-- <div class="col-md-3"></div> -->
@@ -15,7 +16,8 @@
                 <form action="{{route('orders.index')}}">
                     <div class="row">
                         <div class="col-md-5">
-                            <input type="date" name="start_date" class="form-control" value="{{request('start_date')}}" />
+                            <input type="date" name="start_date" class="form-control"
+                                value="{{request('start_date')}}" />
                         </div>
                         <div class="col-md-5">
                             <input type="date" name="end_date" class="form-control" value="{{request('end_date')}}" />
@@ -38,6 +40,7 @@
                     <th>Status</th>
                     <th>Remain.</th>
                     <th>Created At</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,21 +52,27 @@
                     <td>{{ config('settings.currency_symbol') }} {{$order->formattedReceivedAmount()}}</td>
                     <td>
                         @if($order->receivedAmount() == 0)
-                            <span class="badge badge-danger">Not Paid</span>
+                        <span class="badge badge-danger">Not Paid</span>
                         @elseif($order->receivedAmount() < $order->total())
                             <span class="badge badge-warning">Partial</span>
-                        @elseif($order->receivedAmount() == $order->total())
+                            @elseif($order->receivedAmount() == $order->total())
                             <span class="badge badge-success">Paid</span>
-                        @elseif($order->receivedAmount() > $order->total())
+                            @elseif($order->receivedAmount() > $order->total())
                             <span class="badge badge-info">Change</span>
-                        @endif
+                            @endif
                     </td>
-                    <td>{{config('settings.currency_symbol')}} {{number_format($order->total() - $order->receivedAmount(), 2)}}</td>
+                    <td>{{config('settings.currency_symbol')}}
+                        {{number_format($order->total() - $order->receivedAmount(), 2)}}
+                    </td>
                     <td>{{$order->created_at}}</td>
+                    <td>
+                        <a href="{{route('orders.show', $order->id)}}"><i class="fas fa-eye"></i></a>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
-            <tfoot><!-- Log on to codeastro.com for more projects -->
+            <tfoot>
+                <!-- Log on to codeastro.com for more projects -->
                 <tr>
                     <th></th>
                     <th></th>
@@ -79,4 +88,3 @@
     </div>
 </div><!-- Log on to codeastro.com for more projects -->
 @endsection
-
