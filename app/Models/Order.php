@@ -61,4 +61,9 @@ class Order extends Model
     {
         return number_format($this->total() - $this->receivedAmount(), 2);
     }
+    //inventory
+    public function inventory()
+    {
+        return $this->hasMany(Inventory::class);
+    }
 }

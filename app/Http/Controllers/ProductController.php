@@ -159,7 +159,7 @@ class ProductController extends Controller
             $handle = fopen('php://output', 'w');
 
             // Write headers
-            fputcsv($handle, ['ID', 'Name', 'Description', 'Barcode', 'Cost', 'Price', 'Quantity', 'Status']);
+            fputcsv($handle, ['ID', 'Name', 'Description', 'Barcode', 'MRP', 'Our Price', 'Quantity', 'Status']);
 
             // Write product data
             foreach ($products as $product) {
@@ -212,8 +212,8 @@ class ProductController extends Controller
                         'name' => $data['Name'],
                         'description' => $data['Description'],
                         'barcode' => $data['Barcode'],
-                        'cost' => $data['Cost'],
-                        'price' => $data['Price'],
+                        'cost' => $data['MRP'],
+                        'price' => $data['Our Price'],
                         'quantity' => $data['Quantity'],
                         'status' => $data['Status'],
                     ]

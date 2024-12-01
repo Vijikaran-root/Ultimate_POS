@@ -10,7 +10,9 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $inventory = Inventory::all();
+        //$inventory = Inventory::all(); orderby desc
+        $inventory = Inventory::orderBy('created_at', 'desc')->paginate(25);
+
         return view('inventory.index', compact('inventory'));
     }
     public function create()
@@ -51,5 +53,52 @@ class InventoryController extends Controller
         // Redirect with success message
         return redirect()->route('inventory.index')
             ->with('success', 'Inventory created successfully.');
+    }
+    public function edit(Inventory $inventory)
+    {
+        // $products = Product::all(); where quantity<=100
+        $products = Product::where('quantity', '<', 100)->get();
+        return view('inventory.edit', compact('inventory', 'products'));
+    }
+    public function update(Request $request, Inventory $inventory)
+    {
+        // Validate the request data
+        $request->validate([
+            'product_id' => 'required|exists:products,id', // Ensure the product exists
+            'reorder_level' => 'required|integer|min:0',
+            'cost' => 'required|numeric|min:0',
+        ]);
+
+        // Retrieve the product by its ID
+        $product = Product::find($request->product_id);
+        if (!$product) {
+            return redirect()->back()->withErrors(['product_id' => 'Product not found']);
+        }
+
+        // Update product's quantity
+        $product->quantity += $request->reorder_level;
+        $product->save();
+
+        // Prepare data for inventory update
+        $inventoryData = [
+            'product_id' => $request->product_id,
+            'reorder_level' => $request->reorder_level,
+            'quantity_on_hand' => $request->reorder_level,
+            'cost' => $request->cost,
+        ];
+
+        // Update the inventory record
+        $inventory->update($inventoryData);
+
+        // Redirect with success message
+        return redirect()->route('inventory.index')
+            ->with('success', 'Inventory updated successfully.');
+    }
+    public function delete(Inventory $inventory)
+    {
+        $inventory->delete();
+
+        return redirect()->route('inventory.index')
+            ->with('success', 'Inventory deleted successfully.');
     }
 }

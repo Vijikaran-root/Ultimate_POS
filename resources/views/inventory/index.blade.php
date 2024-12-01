@@ -19,6 +19,7 @@
                     <th>Cost</th>
                     <th>Reorder Level</th>
                     <th>Quantity On Hand</th>
+                    <th>Stock Value</th>
                     <th>Created At</th>
                     <th>Actions</th>
                 </tr>
@@ -29,9 +30,12 @@
 
                     <td>{{$invent->id}}</td>
                     <td>{{$invent->product->name}}</td>
-                    <td>{{$invent->cost}}</td>
-                    <td>{{$invent->reorder_level}}</td>
-                    <td>{{$invent->quantity_on_hand}}</td>
+                    <td>{{config('settings.currency_symbol')}} {{number_format($invent->cost,2)}}</td>
+                    <td>{{number_format($invent->reorder_level,0)}}</td>
+                    <td>{{number_format($invent->quantity_on_hand,0)}}</td>
+                    <td>{{config('settings.currency_symbol')}}
+                        {{number_format($invent->cost * $invent->quantity_on_hand,2)}}
+                    </td>
                     <td>{{$invent->created_at}}</td>
                     <td>
                         <a href="{{ route('inventory.edit', $invent) }}" class="btn btn-primary"><i
@@ -43,6 +47,7 @@
                 @endforeach
             </tbody>
         </table>
+        {{ $inventory->render() }}
     </div>
 </div>
 @endsection

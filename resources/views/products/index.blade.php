@@ -24,8 +24,8 @@
                     <th>Name</th>
                     <th>Image</th>
                     <th>Barcode</th>
-                    <th>Cost</th>
-                    <th>Price</th>
+                    <th>MRP</th>
+                    <th>Our Price</th>
                     <th>Quantity</th>
                     <th>Status</th>
                     <th>Created At</th>

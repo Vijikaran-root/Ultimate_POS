@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -44,17 +45,25 @@ class HomeController extends Controller
             return $i->receivedAmount();
         })->sum();
         //monthly profit(order_item.price - (order_item.quantity*product.cost)) 
-        $monthly_profit = $orders->where('created_at', '>=', date('Y-m-d', strtotime('-30 days')) . ' 00:00:00')->map(function ($i) {
-            return $i->items->map(function ($j) {
-                return ($j->price - ($j->quantity * $j->product->cost));
+        $monthly_profit = $orders->where('created_at', '>=', date('Y-m-d', strtotime('-30 days')) . ' 00:00:00')
+            ->map(function ($order) {
+                return $order->items->map(function ($item) {
+                    $inventory = $item->product->inventories->first(); // Adjust logic to select the appropriate inventory
+                    $inventoryCost = $inventory ? $inventory->cost : 0;
+                    return ($item->price - ($item->quantity * $inventoryCost));
+                })->sum();
             })->sum();
-        })->sum();
+
         //daily profit(order_item.price - (order_item.quantity*product.cost))
-        $daily_profit = $orders->where('created_at', '>=', date('Y-m-d') . ' 00:00:00')->map(function ($i) {
-            return $i->items->map(function ($j) {
-                return ($j->price - ($j->quantity * $j->product->cost));
+        $daily_profit = $orders->where('created_at', '>=', date('Y-m-d') . ' 00:00:00')
+            ->map(function ($order) {
+                return $order->items->map(function ($item) {
+                    $inventory = $item->product->inventories->first(); // Access the inventory via the product relationship
+                    $inventoryCost = $inventory ? $inventory->cost : 0; // Handle null inventory
+                    return ($item->price - ($item->quantity * $inventoryCost));
+                })->sum();
             })->sum();
-        })->sum();
+
         //monthly orders
         $monthly_orders = $orders->where('created_at', '>=', date('Y-m-d', strtotime('-30 days')) . ' 00:00:00')->count();
         //daily orders
@@ -74,6 +83,8 @@ class HomeController extends Controller
             return $i->receivedAmount();
         })->sum();
         $total_pending_due = $total - $receivedAmount;
+        //suppliercount
+        $supplier_count = Supplier::all()->count();
 
         return view('home', compact(
             'orders',
@@ -87,7 +98,8 @@ class HomeController extends Controller
             'daily_orders',
             'inventory_balance',
             'inventory_value',
-            'total_pending_due'
+            'total_pending_due',
+            'supplier_count'
         ));
     }
 }

@@ -33,7 +33,7 @@
                 <div class="icon">
                     <i class="fas fa-dolly-flatbed"></i>
                 </div>
-                <a href="{{route('products.index')}}" class="small-box-footer">More info <i
+                <a href="{{route('orders.index')}}" class="small-box-footer">More info <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
@@ -63,7 +63,7 @@
                 <div class="icon">
                     <i class="fas fa-dolly-flatbed"></i>
                 </div>
-                <a href="{{route('products.index')}}" class="small-box-footer">More info <i
+                <a href="{{route('cashin.index')}}" class="small-box-footer">More info <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
@@ -113,7 +113,7 @@
                 <div class="icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <a href="{{ route('customers.index') }}" class="small-box-footer">More info <i
+                <a href="{{ route('orders.index') }}" class="small-box-footer">More info <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
@@ -122,13 +122,13 @@
             <!-- small box -->
             <div class="small-box bg-purple">
                 <div class="inner">
-                    <h3>{{$products_count}}</h3>
-                    <p>Total Products</p>
+                    <h3>{{$supplier_count}}</h3>
+                    <p>Total Suppliers</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-dolly-flatbed"></i>
                 </div>
-                <a href="{{route('products.index')}}" class="small-box-footer">More info <i
+                <a href="{{route('suppliers.index')}}" class="small-box-footer">More info <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
@@ -158,7 +158,7 @@
                 <div class="icon">
                     <i class="fas fa-money-check-alt"></i>
                 </div>
-                <a href="{{route('orders.index')}}" class="small-box-footer">More info <i
+                <a href="{{route('inventory.index')}}" class="small-box-footer">More info <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
@@ -173,7 +173,7 @@
                 <div class="icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <a href="{{route('orders.index')}}" class="small-box-footer">More info <i
+                <a href="{{route('inventory.index')}}" class="small-box-footer">More info <i
                         class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
