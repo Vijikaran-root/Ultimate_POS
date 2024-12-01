@@ -19,7 +19,21 @@
                 </tr>
             </thead>
             <tbody>
-
+                @forelse ($monthlySales as $sale)
+                <tr>
+                    <td>Monthly Sales Report</td>
+                    <td>{{ $sale->month }}</td>
+                    <td>
+                        <!-- Replace # with the actual route to view/download the report -->
+                        <a href="#" class="btn btn-sm btn-primary">View</a>
+                        <a href="#" class="btn btn-sm btn-success">Download</a>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="3" class="text-center">No data available for monthly sales.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
