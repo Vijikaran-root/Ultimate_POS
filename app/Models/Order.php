@@ -52,6 +52,13 @@ class Order extends Model
             return $i->amount;
         })->sum();
     }
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+
+
 
     public function formattedReceivedAmount()
     {

@@ -33,6 +33,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('suppliers', SupplierController::class);
     Route::resource('inventory', InventoryController::class);
     Route::resource('report', ReportController::class);
+    Route::get('/reports/view/{month}/{year}', [ReportController::class, 'viewReport'])->name('reports.view');
+    Route::get('/reports/download/{month}/{year}', [ReportController::class, 'downloadReport'])->name('reports.download');
 
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

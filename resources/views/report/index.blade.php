@@ -15,18 +15,21 @@
                     <!-- Log on to codeastro.com for more projects -->
                     <th>Report Name</th>
                     <th>Month</th>
+                    <th>Year</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($monthlySales as $sale)
+                @forelse ($orders as $order)
                 <tr>
-                    <td>Monthly Sales Report</td>
-                    <td>{{ $sale->month }}</td>
+                    <td>Monthly Report</td>
+                    <td>{{ $order->month }}</td>
+                    <td>{{ $order->year }}</td>
                     <td>
-                        <!-- Replace # with the actual route to view/download the report -->
-                        <a href="#" class="btn btn-sm btn-primary">View</a>
-                        <a href="#" class="btn btn-sm btn-success">Download</a>
+                        <a href="{{ route('reports.view', ['month' => $order->month, 'year' => $order->year]) }}"
+                            class="btn btn-sm btn-primary">View</a>
+                        <a href="{{ route('reports.download', ['month' => $order->month, 'year' => $order->year]) }}"
+                            class="btn btn-sm btn-success">Download</a>
                     </td>
                 </tr>
                 @empty

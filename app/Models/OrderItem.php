@@ -26,4 +26,9 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Inventory::class);
     }
+    public function costOfGoodsSold()
+    {
+        // return $this->quantity * $this->inventory->cost; get the first value
+        return $this->quantity * $this->inventory->cost;
+    }
 }

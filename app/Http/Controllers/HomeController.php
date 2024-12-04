@@ -31,12 +31,16 @@ class HomeController extends Controller
         $customers_count = Customer::count();
         $products_count = Product::count();
         //monthly sales
-        $monthly_sales = $orders->where('created_at', '>=', date('Y-m-d', strtotime('-30 days')) . ' 00:00:00')->map(function ($i) {
+        $monthly_sales = $orders->whereBetween('created_at', [
+            date('Y-m-01 00:00:00'), // First day of the current month
+            date('Y-m-t 23:59:59'),  // Last day of the current month
+        ])->map(function ($i) {
             if ($i->receivedAmount() > $i->total()) {
                 return $i->total();
             }
             return $i->receivedAmount();
         })->sum();
+
         //daily sales
         $daily_sales = $orders->where('created_at', '>=', date('Y-m-d') . ' 00:00:00')->map(function ($i) {
             if ($i->receivedAmount() > $i->total()) {
