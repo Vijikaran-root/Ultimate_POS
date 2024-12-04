@@ -12,7 +12,9 @@ class ReportController extends Controller
         //get the month names where the orders are placed
         $orders = Order::selectRaw('MONTHNAME(created_at) as month, YEAR(created_at) as year, count(*) as total')
             ->groupByRaw('YEAR(created_at), MONTH(created_at), MONTHNAME(created_at)')
+            ->orderByRaw('YEAR(created_at) DESC, MONTH(created_at) DESC')
             ->get();
+
         return view('report.index', compact('orders'));
     }
     public function viewReport($month, $year)

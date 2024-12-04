@@ -48,15 +48,22 @@ class HomeController extends Controller
             }
             return $i->receivedAmount();
         })->sum();
+
         //monthly profit(order_item.price - (order_item.quantity*product.cost)) 
-        $monthly_profit = $orders->where('created_at', '>=', date('Y-m-d', strtotime('-30 days')) . ' 00:00:00')
-            ->map(function ($order) {
-                return $order->items->map(function ($item) {
-                    $inventory = $item->product->inventories->first(); // Adjust logic to select the appropriate inventory
-                    $inventoryCost = $inventory ? $inventory->cost : 0;
-                    return ($item->price - ($item->quantity * $inventoryCost));
-                })->sum();
-            })->sum();
+        $monthly_profit = $orders->whereBetween('created_at', [
+            date('Y-m-01 00:00:00'), // First day of the current month
+            date('Y-m-t 23:59:59'),  // Last day of the current month
+        ])->map(function ($order) {
+            return $order->items->map(function ($item) {
+                // Get the inventory related to the product (adjust logic if necessary)
+                $inventory = $item->product->inventories->first(); // Assuming 'inventories' is a relationship
+                // If no inventory, set cost to 0
+
+                // Calculate profit for the item
+                return ($item->price) - ($item->quantity * $inventory->cost);
+            })->sum(); // Sum the profit for all items in the order
+        })->sum(); // Sum the profit for all orders in the current month
+
 
         //daily profit(order_item.price - (order_item.quantity*product.cost))
         $daily_profit = $orders->where('created_at', '>=', date('Y-m-d') . ' 00:00:00')

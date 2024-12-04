@@ -1,7 +1,8 @@
 @extends('layouts.admin')
 
-@section('title', 'Report Management')
-@section('content-header', 'Report Management')
+@section('title', "Report {$month} {$year}")
+@section('content-header', "Report {$month} {$year}")
+
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
@@ -36,6 +37,37 @@
             <tr class="table-primary">
                 <td>Gross Profit</td>
                 <td>Revenue - COGS</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($grossProfit, 2) }}</td>
+            </tr>
+
+            <!-- Operating Expenses -->
+
+        </tbody>
+    </table>
+    <h1>Daily Turnover {{ $month }} {{ $year }}</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Days</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Revenue Section -->
+            <tr>
+                <td>Revenue</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($total, 2) }}</td>
+            </tr>
+
+            <!-- Cost of Goods Sold Section -->
+            <tr>
+                <td>Cost of Goods Sold (COGS)</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($cogs, 2) }}</td>
+            </tr>
+
+            <!-- Gross Profit -->
+            <tr class="table-primary">
+                <td>Gross Profit</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($grossProfit, 2) }}</td>
             </tr>
 
