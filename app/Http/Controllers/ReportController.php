@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -14,6 +15,8 @@ class ReportController extends Controller
             ->groupByRaw('YEAR(created_at), MONTH(created_at), MONTHNAME(created_at)')
             ->orderByRaw('YEAR(created_at) DESC, MONTH(created_at) DESC')
             ->get();
+        //get the daily turnover sales
+
 
         return view('report.index', compact('orders'));
     }
@@ -50,7 +53,13 @@ class ReportController extends Controller
 
 
         $grossProfit = $total - $cogs;
-        return view('report.view', compact('orders', 'month', 'year', 'total', 'receivedAmount', 'cogs', 'grossProfit'));
+        $dailyTurnover = OrderItem::selectRaw('DATE(created_at) as date, SUM(price) as total')
+            ->whereRaw('MONTHNAME(created_at) = ? AND YEAR(created_at) = ?', [$month, $year]) // Filter by month and year
+            ->groupByRaw('DATE(created_at)')
+            ->orderByRaw('DATE(created_at) DESC')
+            ->get();
+
+        return view('report.view', compact('dailyTurnover', 'orders', 'month', 'year', 'total', 'receivedAmount', 'cogs', 'grossProfit'));
     }
 
     public function downloadReport($month, $year)
