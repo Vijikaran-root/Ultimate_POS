@@ -29,7 +29,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/import-products', [ProductController::class, 'import'])->name('import-products.post');
     Route::resource('customers', CustomerController::class);
     Route::resource('orders', OrderController::class);
-    Route::resource('cashin', CashinController::class);
+    Route::resource('due', CashinController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('inventory', InventoryController::class);
     Route::resource('report', ReportController::class);

@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
-@section('title', 'Add New Cashin')
-@section('content-header', 'Add New Cashin')
+@section('title', 'Add Due Settlement')
+@section('content-header', 'Add Due Settlement')
 
 @section('content')
 
 <div class="card">
     <div class="card-body">
 
-        <form action="{{ route('cashin.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('due.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <!-- dropdown menue for the orders with remaining amount -->

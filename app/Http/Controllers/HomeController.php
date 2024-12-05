@@ -35,18 +35,12 @@ class HomeController extends Controller
             date('Y-m-01 00:00:00'), // First day of the current month
             date('Y-m-t 23:59:59'),  // Last day of the current month
         ])->map(function ($i) {
-            if ($i->receivedAmount() > $i->total()) {
-                return $i->total();
-            }
-            return $i->receivedAmount();
+            return $i->total();
         })->sum();
 
         //daily sales
         $daily_sales = $orders->where('created_at', '>=', date('Y-m-d') . ' 00:00:00')->map(function ($i) {
-            if ($i->receivedAmount() > $i->total()) {
-                return $i->total();
-            }
-            return $i->receivedAmount();
+            return $i->total();
         })->sum();
 
         //monthly profit(order_item.price - (order_item.quantity*product.cost)) 

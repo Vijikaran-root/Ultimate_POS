@@ -66,9 +66,15 @@
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
-                    <a href="{{ route('cashin.index') }}" class="nav-link {{ activeSegment('cashin') }}">
+                    <a href="{{ route('due.index') }}" class="nav-link {{ activeSegment('due') }}">
                         <i class="nav-icon fas fa-chart-line"></i>
-                        <p>Cash In</p>
+                        <p>Due Settlement</p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('due.index') }}" class="nav-link {{ activeSegment('due') }}">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <p>Cash In/Out</p>
                     </a>
                 </li>
                 <li class="nav-item has-treeview">

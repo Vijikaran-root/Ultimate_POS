@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
-@section('title', 'Cash In')
-@section('content-header', 'Cash In')
+@section('title', 'Due Settlement')
+@section('content-header', 'Due Settlement')
 @section('content-actions')
-<a href="{{route('cashin.create')}}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Cashin</a>
+<a href="{{route('due.create')}}" class="btn btn-success"><i class="fas fa-plus"></i> Due Settlement</a>
 @endsection
 
 @section('content')
@@ -14,7 +14,7 @@
         <div class="row">
             <!-- <div class="col-md-3"></div> -->
             <div class="col-md-12">
-                <form action="{{route('cashin.index')}}">
+                <form action="{{route('due.index')}}">
                     <div class="row">
                         <div class="col-md-5">
                             <input type="date" name="start_date" class="form-control"
@@ -51,9 +51,9 @@
                     <td>{{$cash->amount}}</td>
                     <td>{{$cash->created_at}}</td>
                     <td>
-                        <a href="{{ route('cashin.edit', $cash->id) }}" class="btn btn-primary"><i
+                        <a href="{{ route('due.edit', $cash->id) }}" class="btn btn-primary"><i
                                 class="fas fa-edit"></i></a>
-                        <button class="btn btn-danger btn-delete" data-url="{{route('cashin.destroy', $cash)}}"><i
+                        <button class="btn btn-danger btn-delete" data-url="{{route('due.destroy', $cash)}}"><i
                                 class="fas fa-trash"></i></button>
                     </td>
                 </tr>

@@ -44,7 +44,30 @@
 
         </tbody>
     </table>
-    <h1>Daily Turnover {{ $month }} {{ $year }}</h1>
+    <h1>Cash Flow for {{ $month }} {{ $year }}</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Date</td>
+                <td>Total Sales</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($total, 2) }}</td>
+                <td>Date</td>
+                <td>Total Sales</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($total, 2) }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h1>Daily Turnover for {{ $month }} {{ $year }}</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>

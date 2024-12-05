@@ -13,7 +13,7 @@ class CashinController extends Controller
     public function index()
     {
         $cashin = CashIn::all();
-        return view('cashin.index', compact('cashin'));
+        return view('due.index', compact('cashin'));
     }
     public function create()
     {
@@ -33,7 +33,7 @@ class CashinController extends Controller
 
 
 
-        return view('cashin.create', compact('orders'));
+        return view('due.create', compact('orders'));
     }
     public function store(Request $request)
     {
@@ -45,24 +45,24 @@ class CashinController extends Controller
         $payment->amount = $payment->amount + $request->amount;
         $payment->save();
         $cashin->save();
-        return redirect()->route('cashin.index');
+        return redirect()->route('due.index');
     }
     public function edit($id)
     {
         $cashin = CashIn::find($id);
-        return view('cashin.edit', compact('cashin'));
+        return view('due.edit', compact('cashin'));
     }
     public function update(Request $request, $id)
     {
         $cashin = CashIn::find($id);
         $cashin->cashin = $request->cashin;
         $cashin->save();
-        return redirect()->route('cashin.index');
+        return redirect()->route('due.index');
     }
     public function destroy($id)
     {
         $cashin = CashIn::find($id);
         $cashin->delete();
-        return redirect()->route('cashin.index');
+        return redirect()->route('due.index');
     }
 }

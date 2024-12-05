@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
-@section('title', 'Update Cashin')
-@section('content-header', 'Update Cashin')
+@section('title', 'Update Due')
+@section('content-header', 'Update Due')
 
 @section('content')
 
 <div class="card">
     <div class="card-body">
 
-        <form action="{{ route('cashin.update', $cashin) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('due.update', $cashin) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
