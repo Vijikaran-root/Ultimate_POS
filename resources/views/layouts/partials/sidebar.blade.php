@@ -72,7 +72,7 @@
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
-                    <a href="{{ route('due.index') }}" class="nav-link {{ activeSegment('due') }}">
+                    <a href="{{ route('cash.index') }}" class="nav-link {{ activeSegment('cash') }}">
                         <i class="nav-icon fas fa-chart-line"></i>
                         <p>Cash In/Out</p>
                     </a>

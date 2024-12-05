@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CashController;
 use App\Http\Controllers\CashinController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
@@ -30,6 +31,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::resource('orders', OrderController::class);
     Route::resource('due', CashinController::class);
+    Route::resource('cash', CashController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('inventory', InventoryController::class);
     Route::resource('report', ReportController::class);

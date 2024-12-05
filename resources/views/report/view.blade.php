@@ -41,30 +41,139 @@
             </tr>
 
             <!-- Operating Expenses -->
+            @foreach ($otherExpensesDetails as $expense)
+            <tr>
+                <td>Operating Expenses</td>
+                <td>{{ $expense->description }}</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($expense->value, 2) }}</td>
+            </tr>
+            @endforeach
+
+            <!-- Net Profit -->
+            <tr class="table-success">
+                <td>Net Profit</td>
+                <td>Gross Profit - Operating Expenses</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($grossProfit - $otherExpenses, 2) }}</td>
+            </tr>
 
         </tbody>
     </table>
-    <h1>Cash Flow for {{ $month }} {{ $year }}</h1>
+    <h1>Cash Statement for {{ $month }} {{ $year }}</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
-                <th>Date</th>
+                <th>Month</th>
                 <th>Description</th>
                 <th>Amount</th>
-                <th>Date</th>
+                <th>Month</th>
                 <th>Description</th>
                 <th>Amount</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Date</td>
-                <td>Total Sales</td>
-                <td>{{ config('settings.currency_symbol') }} {{ number_format($total, 2) }}</td>
-                <td>Date</td>
-                <td>Total Sales</td>
-                <td>{{ config('settings.currency_symbol') }} {{ number_format($total, 2) }}</td>
+            <!-- Brought Forward (B/F) -->
+            @if($sum>$sum1) <tr>
+                <td>{{ $previousMonth }} {{ $previousYear }}</td>
+                <td>B/F</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($bf1, 2) }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
+            @else
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ $previousMonth }} {{ $previousYear }}</td>
+                <td>B/F</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($bf1, 2) }}</td>
+            </tr>
+            @endif
+
+            <!-- Credit and Debit Entries -->
+            <tr>
+                <td>{{ $month }} {{ $year }}</td>
+                <td>Total Sales</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($total, 2) }}</td>
+                <td>{{ $month }} {{ $year }}</td>
+                <td>Cash Purchases</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($cashPurchases, 2) }}</td>
+            </tr>
+            <tr>
+                <td>{{ $month }} {{ $year }}</td>
+                <td>Additional Capital</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($newCapital, 2) }}</td>
+                <td>{{ $month }} {{ $year }}</td>
+                <td>Paid Suppliers</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($paidSuppliers, 2) }}</td>
+            </tr>
+            <tr>
+                <td>{{ $month }} {{ $year }}</td>
+                <td>Purchase Return</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($purchaseReturn, 2) }}</td>
+                <td>{{ $month }} {{ $year }}</td>
+                <td>Other Expenses</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($otherExpenses, 2) }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ $month }} {{ $year }}</td>
+                <td>Drawings</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($drawings, 2) }}</td>
+            </tr>
+
+            @if($sum<$sum1) <tr>
+                <td>{{ $month }} {{ $year }}</td>
+                <td>C/D</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($cd, 2) }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                </tr>
+                @else
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ $month }} {{ $year }}</td>
+                    <td>C/D</td>
+                    <td>{{ config('settings.currency_symbol') }} {{ number_format($cd, 2) }}</td>
+                </tr>
+                @endif
+
+                <!-- Carried Down (C/D) -->
+                <tr class="table-primary">
+                    <td></td>
+                    <td></td>
+                    <td>{{ config('settings.currency_symbol') }} {{ number_format($sum, 2) }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ config('settings.currency_symbol') }} {{ number_format($sum, 2) }}</td>
+                </tr>
+
+                <!-- Brought Down (B/D) -->
+                @if($sum>$sum1) <tr>
+                    <td>{{ $nextMonth }} {{ $nextYear }}</td>
+                    <td>B/D</td>
+                    <td>{{ config('settings.currency_symbol') }} {{ number_format($bd, 2) }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                @else
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ $nextMonth }} {{ $nextYear }}</td>
+                    <td>B/D</td>
+                    <td>{{ config('settings.currency_symbol') }} {{ number_format($bd, 2) }}</td>
+
+                </tr>
+                @endif
         </tbody>
     </table>
     <h1>Daily Turnover for {{ $month }} {{ $year }}</h1>
@@ -85,6 +194,27 @@
             <tr class="table-primary">
                 <td>Total</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($total,2) }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h1>Daily Profit for {{ $month }} {{ $year }}</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Days</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($dailyProfit as $day => $price)
+            <tr>
+                <td>{{ $price->date }}</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($price->profit,2) }}</td>
+            </tr>
+            @endforeach
+            <tr class="table-primary">
+                <td>Total</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($dailyProfitSum,2) }}</td>
             </tr>
         </tbody>
     </table>
