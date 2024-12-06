@@ -11,7 +11,7 @@
                 <thead>
                     <tr>
                         <th>Order ID</th>
-                        <th>Product ID</th>
+                        <th>Product Name</th>
                         <th>MRP</th>
                         <th>Our Price</th>
                         <th>Quantity</th>
@@ -24,7 +24,7 @@
                     <tr>
                         <td>{{ $order->order_id }}</td>
                         <td>{{ $order->product->name }}</td>
-                        <td>{{ config('settings.currency_symbol') }} {{ $order->price / $order->quantity }}</td>
+                        <td>{{ config('settings.currency_symbol') }} {{ $order->product->cost }}</td>
                         <td>{{ config('settings.currency_symbol') }} {{ $order->price / $order->quantity }}</td>
                         <td>{{ $order->quantity }}</td>
                         <td>{{ config('settings.currency_symbol') }} {{ number_format($order->price, 2) }}</td>
