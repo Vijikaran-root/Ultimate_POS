@@ -17,6 +17,7 @@
                 <select name="name" class="form-control @error('name') is-invalid @enderror" id="name">
                     <option value="">Select Cash In/Out Name</option>
                     <option value="New Capital">New Capital</option>
+                    <option value="Purchase Return">Purchase Return</option>
                     <option value="Cash Purchases">Cash Purchases</option>
                     <option value="Paid Suppliers">Paid Suppliers</option>
                     <option value="Drawings">Drawings</option>
