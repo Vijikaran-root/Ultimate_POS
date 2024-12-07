@@ -31,25 +31,6 @@ class ReportController extends Controller
         $receivedAmount = $orders->map(function ($i) {
             return $i->receivedAmount();
         })->sum();
-        //cost of goods sold
-        $cogs = $orders->map(function ($order) {
-            if ($order->orderItems->isEmpty()) {
-                return 0; // No items, COGS is 0
-            }
-
-            return $order->orderItems->map(function ($item) {
-                // Get the first inventory related to the product (adjust if needed to get the correct inventory)
-                $inventory = $item->product->inventories->first(); // Assuming 'inventories' is a relationship
-
-                // Check if inventory exists and calculate COGS
-                if ($inventory) {
-                    return $inventory->cost * $item->quantity;
-                }
-
-                // Return 0 if no inventory exists
-                return 0;
-            })->sum();
-        })->sum();
 
         $dailyProfit = OrderItem::selectRaw('DATE(order_items.created_at) as date, SUM(order_items.price - (order_items.quantity * inventory.cost)) as profit')
             ->join('products', 'order_items.product_id', '=', 'products.id') // Join products to access inventory
@@ -62,7 +43,7 @@ class ReportController extends Controller
         $dailyProfitSum = $dailyProfit->map(function ($i) {
             return $i->profit;
         })->sum();
-
+        $cogs = $total - $dailyProfitSum;
         $grossProfit = $total - $cogs;
         $dailyTurnover = OrderItem::selectRaw('DATE(created_at) as date, SUM(price) as total')
             ->whereRaw('MONTHNAME(created_at) = ? AND YEAR(created_at) = ?', [$month, $year]) // Filter by month and year
