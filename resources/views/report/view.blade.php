@@ -218,6 +218,40 @@
             </tr>
         </tbody>
     </table>
+    <h1>Top 5 Highest Selling Products</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($topProducts as $product)
+            <tr>
+                <td>{{ $product->name }}</td>
+                <td>{{ $product->total_quantity }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <h1>Top 5 Lowest Selling Products</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($bottomProducts as $product)
+            <tr>
+                <td>{{ $product->name }}</td>
+                <td>{{ $product->total_quantity }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 
 
