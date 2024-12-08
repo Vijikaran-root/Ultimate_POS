@@ -3,6 +3,9 @@
 @section('title', 'Ultimate POS')
 
 @section('content')
-<div id="cart"></div>
+<div id="cart" class="h-full">
+
+
+</div>
 
 @endsection

@@ -206,9 +206,11 @@ class Cart extends Component {
     }
     render() {
         const { cart, products, customers, barcode } = this.state;
+
         return (
-            <div className="row">
-                <div className="col-md-6 col-lg-4">
+            <div className="row h-100">
+                {/* Left Cart Section */}
+                <div className="col-md-6 col-lg-4 h-100 d-flex flex-column">
                     <div className="row mb-2">
                         <div className="col">
                             <form onSubmit={this.handleScanBarcode}>
@@ -226,7 +228,6 @@ class Cart extends Component {
                                 className="form-control"
                                 onChange={this.setCustomerId}
                             >
-                                <option value="">Walking Customer</option>
                                 {customers.map((cus) => (
                                     <option
                                         key={cus.id}
@@ -236,8 +237,9 @@ class Cart extends Component {
                             </select>
                         </div>
                     </div>
-                    <div className="user-cart">
-                        <div className="card">
+
+                    <div className="user-cart flex-grow-1 overflow-auto">
+                        <div className="card h-100">
                             <table className="table table-striped">
                                 <thead>
                                     <tr>
@@ -286,30 +288,32 @@ class Cart extends Component {
                         </div>
                     </div>
 
-                    <div className="row">
-                        <div className="col">Total:</div>
-                        <div className="col text-right">
-                            {window.APP.currency_symbol} {this.getTotal(cart)}
+                    <div className="mt-2">
+                        <div className="row">
+                            <div className="col">Total:</div>
+                            <div className="col text-right">
+                                {window.APP.currency_symbol}{" "}
+                                {this.getTotal(cart)}
+                            </div>
                         </div>
-                    </div>
-                    <div className="row">
-                        <div className="col">Cash Paid:</div>
-                        <div className="col text-right">
-                            {window.APP.currency_symbol}{" "}
-                            <input type="text" className="form-control" />
+                        <div className="row">
+                            <div className="col">Cash Paid:</div>
+                            <div className="col text-right">
+                                <input type="text" className="form-control" />
+                            </div>
                         </div>
-                    </div>
-                    <div className="row">
-                        <div className="col">Balance:</div>
-                        <div className="col text-right">
-                            {window.APP.currency_symbol}{" "}
-                            {(
-                                this.getTotal(cart) - this.getTotal(cart)
-                            ).toFixed(2)}
+                        <div className="row">
+                            <div className="col">Balance:</div>
+                            <div className="col text-right">
+                                {window.APP.currency_symbol}{" "}
+                                {(
+                                    this.getTotal(cart) - this.getTotal(cart)
+                                ).toFixed(2)}
+                            </div>
                         </div>
                     </div>
 
-                    <div className="row">
+                    <div className="row mt-2">
                         <div className="col">
                             <button
                                 type="button"
@@ -332,6 +336,8 @@ class Cart extends Component {
                         </div>
                     </div>
                 </div>
+
+                {/* Right Product Section */}
                 <div className="col-md-6 col-lg-8">
                     <div className="mb-2">
                         <input
@@ -342,19 +348,21 @@ class Cart extends Component {
                             onKeyDown={this.handleSeach}
                         />
                     </div>
-                    <div className="order-product">
+                    <div className="order-product d-flex flex-wrap overflow-auto">
                         {products.map((p) => (
                             <div
                                 onClick={() => this.addProductToCart(p.barcode)}
                                 key={p.id}
-                                className="item"
+                                className="item m-2"
+                                style={{ width: "150px", cursor: "pointer" }}
                             >
                                 <img
                                     src={p.image_url}
-                                    class="rounded mx-auto d-block"
+                                    className="rounded mx-auto d-block img-fluid"
                                     alt=""
                                 />
                                 <h5
+                                    className="text-center"
                                     style={
                                         window.APP.warning_quantity > p.quantity
                                             ? { color: "red" }
@@ -373,7 +381,3 @@ class Cart extends Component {
 }
 
 export default Cart;
-
-if (document.getElementById("cart")) {
-    ReactDOM.render(<Cart />, document.getElementById("cart"));
-}

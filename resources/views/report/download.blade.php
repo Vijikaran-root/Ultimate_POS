@@ -1,44 +1,51 @@
 <style>
-    body {
-        font-family: Arial, sans-serif;
-    }
+body {
+    font-family: Arial, sans-serif;
+}
 
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
 
-    .table th,
-    .table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
+.table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-size: small;
+}
 
-    .table thead {
-        background-color: #f2f2f2;
-    }
+.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-size: smaller;
+}
 
-    .table-primary {
-        background-color: #d9edf7;
-        font-weight: bold;
-    }
+.table thead {
+    background-color: #f2f2f2;
+}
 
-    .table-success {
-        background-color: #dff0d8;
-        font-weight: bold;
-    }
+.table-primary {
+    background-color: #d9edf7;
+    font-weight: bold;
+}
 
-    .thead-dark th {
-        background-color: #343a40;
-        color: white;
-    }
+.table-success {
+    background-color: #dff0d8;
+    font-weight: bold;
+}
+
+.thead-dark th {
+    background-color: #343a40;
+    color: white;
+}
 </style>
 <h1>{{ config('settings.app_name') }} Report for {{ $month }} {{ $year }}</h1>
 <div class="container">
