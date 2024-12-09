@@ -3,7 +3,7 @@
 @section('title', 'Ultimate POS')
 
 @section('content')
-<div id="cart" class="h-full">
+<div id="cart">
 
 
 </div>
