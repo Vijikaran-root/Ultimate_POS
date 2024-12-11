@@ -151,7 +151,7 @@
             <!-- small box -->
             <div class="small-box bg-green">
                 <div class="inner">
-                    <h3>{{$inventory_balance}}</h3>
+                    <h3>{{number_format($inventory_balance,0)}}</h3>
 
                     <p>Inventory Balance</p>
                 </div>

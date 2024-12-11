@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cash;
+use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -128,7 +129,29 @@ class ReportController extends Controller
             ->take(5)
             ->get();
 
+        $cashinhand = $difference;
+        // inventoryValue
+        $inventoryValue = Inventory::all()->sum(function ($product) {
+            return $product->quantity_on_hand * $product->cost;
+        });
+
+        $totalAssets = $cashinhand + $inventoryValue;
+
+        $capital = $newCapital;
+        $netprofit = $dailyProfitSum - $otherExpenses;
+        $totalEquity = $capital + $netprofit - $drawings;
+        $supplierBalance = $inventoryValue - $paidSuppliers - $cashPurchases;
+        $totalLiabilities = $supplierBalance;
+
         return view('report.view', compact(
+            'totalAssets',
+            'totalEquity',
+            'totalLiabilities',
+            'supplierBalance',
+            'capital',
+            'netprofit',
+            'inventoryValue',
+            'cashinhand',
             'topProducts',
             'bottomProducts',
             'dailyProfitSum',
@@ -263,8 +286,29 @@ class ReportController extends Controller
             ->orderBy('total_quantity', 'asc') // Ascending order to get the lowest selling
             ->take(5)
             ->get();
+        $cashinhand = $difference;
+        // inventoryValue
+        $inventoryValue = Inventory::all()->sum(function ($product) {
+            return $product->quantity_on_hand * $product->cost;
+        });
+
+        $totalAssets = $cashinhand + $inventoryValue;
+
+        $capital = $newCapital;
+        $netprofit = $dailyProfitSum - $otherExpenses;
+        $totalEquity = $capital + $netprofit - $drawings;
+        $supplierBalance = $inventoryValue - $paidSuppliers - $cashPurchases;
+        $totalLiabilities = $supplierBalance;
 
         $data = [
+            'totalAssets' => $totalAssets,
+            'totalEquity' => $totalEquity,
+            'totalLiabilities' => $totalLiabilities,
+            'supplierBalance' => $supplierBalance,
+            'capital' => $capital,
+            'netprofit' => $netprofit,
+            'inventoryValue' => $inventoryValue,
+            'cashinhand' => $cashinhand,
             'topProducts' => $topProducts,
             'bottomProducts' => $bottomProducts,
             'month' => $month,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cash;
 use App\Models\Order;
 use App\Models\Customer;
+use App\Models\Inventory;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Supplier;
@@ -128,7 +129,31 @@ class HomeController extends Controller
         $sum1 = $cashPurchases + $paidSuppliers + $otherExpenses + $drawings; // Total debits
         $difference = $sum - $sum1;
 
+
+        $cashinhand = $difference;
+        // inventoryValue
+        $inventoryValue = Inventory::all()->sum(function ($product) {
+            return $product->quantity * $product->cost;
+        });
+
+        $totalAssets = $cashinhand + $inventoryValue;
+
+        $capital = $newCapital;
+        $netprofit = $monthly_profit;
+        $totalEquity = $capital + $netprofit - $drawings;
+        $supplierBalance = $inventoryValue - $paidSuppliers - $cashPurchases;
+        $totalLiabilities = $supplierBalance;
+
         return view('home', compact(
+            'totalAssets',
+            'totalEquity',
+            'totalLiabilities',
+            'supplierBalance',
+            'cashinhand',
+            'inventoryValue',
+            'capital',
+            'netprofit',
+            'drawings',
             'difference',
             'orders',
             'customers_count',

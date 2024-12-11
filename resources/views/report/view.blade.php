@@ -9,7 +9,7 @@
 @endsection
 @section('content')
 <div class="container">
-    <h1>Profit and Loss Statement for {{ $month }} {{ $year }}</h1>
+    <h1>P/L Statement for {{ $month }} {{ $year }}</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
@@ -56,6 +56,84 @@
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($grossProfit - $otherExpenses, 2) }}</td>
             </tr>
 
+        </tbody>
+    </table>
+    <h1>Statement of Financial Position for {{ $month }} {{ $year }}</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Assets</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Current Assets</td>
+                <td>Cash in Hand</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($cashinhand, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Current Assets</td>
+                <td>Closing Stock</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($inventoryValue, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Assets</td>
+                <td></td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($totalAssets, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Equity</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Capital</td>
+                <td>Capital</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($capital, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Retained Earnings</td>
+                <td>Net Profit</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($netprofit,2)}}</td>
+            </tr>
+            <tr>
+                <td>Drawings</td>
+                <td></td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($drawings, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Equity</td>
+                <td></td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($totalEquity, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Liabilities</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Current Liabilities</td>
+                <td>Suppliers Balance</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($supplierBalance, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Liabilities</td>
+                <td></td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($totalLiabilities, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Equity & Liabilities</td>
+                <td>Total Equity + Total Liabilities</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($totalEquity + $totalLiabilities, 2) }}
+                </td>
+            </tr>
         </tbody>
     </table>
     <h1>Cash Statement for {{ $month }} {{ $year }}</h1>

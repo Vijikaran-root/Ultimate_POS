@@ -278,12 +278,15 @@ class Cart extends Component {
                         </div>
 
                         {/* Cart Section */}
-                        <div className="user-cart flex-grow-1 h-full overflow-auto">
-                            <div className="card shadow-sm">
+                        <div className="user-cart d-flex flex-column h-screen overflow-hidden">
+                            <div className="card flex-grow-1 shadow-sm overflow-hidden">
                                 <div className="card-header bg-primary text-white">
                                     <h5 className="mb-0">Cart</h5>
                                 </div>
-                                <div className="card-body p-0">
+                                <div
+                                    className="table-responsive overflow-auto"
+                                    style={{ maxHeight: "400px" }}
+                                >
                                     <table className="table mb-0 table-striped">
                                         <thead>
                                             <tr>
@@ -319,7 +322,6 @@ class Cart extends Component {
                                                                 )
                                                             }
                                                         />
-
                                                         <button
                                                             className="btn btn-danger btn-sm"
                                                             onClick={() =>
@@ -331,8 +333,20 @@ class Cart extends Component {
                                                             <i className="fas fa-trash"></i>
                                                         </button>
                                                     </td>
-                                                    <td>{c.cost}</td>
-                                                    <td>{c.price}</td>
+                                                    <td>
+                                                        {
+                                                            window.APP
+                                                                .currency_symbol
+                                                        }{" "}
+                                                        {c.cost}
+                                                    </td>
+                                                    <td>
+                                                        {
+                                                            window.APP
+                                                                .currency_symbol
+                                                        }{" "}
+                                                        {c.price}
+                                                    </td>
                                                     <td className="text-end">
                                                         {
                                                             window.APP
@@ -349,42 +363,41 @@ class Cart extends Component {
                                     </table>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Total and Actions */}
-                        <div className="mt-3">
-                            <div className="d-flex justify-content-between mb-2 text-green">
-                                <h5>Total Discount:</h5>
-                                <h5>
-                                    {window.APP.currency_symbol}{" "}
-                                    {this.getMRPTotal(cart) -
-                                        this.getTotal(cart)}
-                                </h5>
-                            </div>
-                            <div className="d-flex justify-content-between mb-2">
-                                <h5>Total:</h5>
-                                <h5>
-                                    {window.APP.currency_symbol}{" "}
-                                    {this.getTotal(cart)}
-                                </h5>
-                            </div>
-                            <div className="d-flex">
-                                <button
-                                    type="button"
-                                    className="btn btn-danger flex-grow-1 m-1"
-                                    onClick={this.handleEmptyCart}
-                                    disabled={!cart.length}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-primary flex-grow-1 m-1"
-                                    onClick={this.handleClickSubmit}
-                                    disabled={!cart.length}
-                                >
-                                    Checkout
-                                </button>
+                            {/* Total and Actions */}
+                            <div className="p-3">
+                                <div className="d-flex justify-content-between mb-2 text-green">
+                                    <h5>Total Discount:</h5>
+                                    <h5>
+                                        {window.APP.currency_symbol}{" "}
+                                        {this.getMRPTotal(cart) -
+                                            this.getTotal(cart)}
+                                    </h5>
+                                </div>
+                                <div className="d-flex justify-content-between mb-2">
+                                    <h5>Total:</h5>
+                                    <h5>
+                                        {window.APP.currency_symbol}{" "}
+                                        {this.getTotal(cart)}
+                                    </h5>
+                                </div>
+                                <div className="d-flex">
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger flex-grow-1 m-1"
+                                        onClick={this.handleEmptyCart}
+                                        disabled={!cart.length}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary flex-grow-1 m-1"
+                                        onClick={this.handleClickSubmit}
+                                        disabled={!cart.length}
+                                    >
+                                        Checkout
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
