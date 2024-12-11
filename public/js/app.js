@@ -2075,7 +2075,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-__webpack_require__(/*! ./components/Cart */ "./resources/js/components/Cart.jsx");
+__webpack_require__(/*! ./components/Cart */ "./resources/js/components/Cart.js");
 
 /***/ }),
 
@@ -2129,10 +2129,10 @@ window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 /***/ }),
 
-/***/ "./resources/js/components/Cart.jsx":
-/*!******************************************!*\
-  !*** ./resources/js/components/Cart.jsx ***!
-  \******************************************/
+/***/ "./resources/js/components/Cart.js":
+/*!*****************************************!*\
+  !*** ./resources/js/components/Cart.js ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -2421,12 +2421,12 @@ var Cart = /*#__PURE__*/function (_Component) {
     value: function handleClickSubmit() {
       var _this9 = this;
       sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().fire({
-        title: this.state.translations["received_amount"],
+        title: "Received Amount",
         input: "text",
         inputValue: this.getTotal(this.state.cart),
-        cancelButtonText: this.state.translations["cancel_pay"],
+        cancelButtonText: "Cancel Pay",
         showCancelButton: true,
-        confirmButtonText: this.state.translations["confirm_pay"],
+        confirmButtonText: "Confirm Pay",
         showLoaderOnConfirm: true,
         preConfirm: function preConfirm(amount) {
           return axios__WEBPACK_IMPORTED_MODULE_2___default().post("/admin/orders", {
@@ -2458,151 +2458,178 @@ var Cart = /*#__PURE__*/function (_Component) {
         customers = _this$state.customers,
         barcode = _this$state.barcode,
         translations = _this$state.translations;
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "row",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-          className: "col-md-6 col-lg-4",
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        className: "container-fluid h-full",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          className: "row h-full",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-            className: "row mb-2",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "col",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("form", {
+            className: "col-md-5 d-flex flex-column",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+              className: "mb-3",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("form", {
                 onSubmit: this.handleScanBarcode,
+                className: "mb-2",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
                   type: "text",
                   className: "form-control",
-                  placeholder: translations["scan_barcode"],
+                  placeholder: "Scan Barcode",
                   value: barcode,
                   onChange: this.handleOnChangeBarcode
                 })
-              })
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "col",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("select", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("select", {
                 className: "form-control",
                 onChange: this.setCustomerId,
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
                   value: "",
-                  children: translations["general_customer"]
+                  disabled: true,
+                  selected: true,
+                  children: "Select Customer"
                 }), customers.map(function (cus) {
                   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
                     value: cus.id,
                     children: "".concat(cus.first_name, " ").concat(cus.last_name)
                   }, cus.id);
                 })]
-              })
-            })]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-            className: "user-cart",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "card",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("table", {
-                className: "table table-striped",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("thead", {
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("tr", {
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("th", {
-                      children: translations["product_name"]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("th", {
-                      children: translations["quantity"]
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("th", {
-                      className: "text-right",
-                      children: translations["price"]
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+              className: "user-cart flex-grow-1 h-full overflow-auto",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+                className: "card shadow-sm",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+                  className: "card-header bg-primary text-white",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h5", {
+                    className: "mb-0",
+                    children: "Cart"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+                  className: "card-body p-0",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("table", {
+                    className: "table mb-0 table-striped",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("thead", {
+                      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("tr", {
+                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("th", {
+                          children: "Product"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("th", {
+                          children: "Qty"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("th", {
+                          children: "MRP"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("th", {
+                          className: "text-end",
+                          children: "Our Price"
+                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("th", {
+                          children: "Subtotal"
+                        })]
+                      })
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("tbody", {
+                      children: cart.map(function (c) {
+                        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("tr", {
+                          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("td", {
+                            children: c.name
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("td", {
+                            className: "d-flex align-items-center",
+                            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+                              type: "number",
+                              className: "form-control form-control-sm me-2",
+                              style: {
+                                width: "80px"
+                              },
+                              value: c.pivot.quantity,
+                              min: "1",
+                              onChange: function onChange(event) {
+                                return _this10.handleChangeQty(c.id, event.target.value);
+                              }
+                            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
+                              className: "btn btn-danger btn-sm",
+                              onClick: function onClick() {
+                                return _this10.handleClickDelete(c.id);
+                              },
+                              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("i", {
+                                className: "fas fa-trash"
+                              })
+                            })]
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("td", {
+                            children: c.cost
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("td", {
+                            children: c.price
+                          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("td", {
+                            className: "text-end",
+                            children: [window.APP.currency_symbol, " ", (c.price * c.pivot.quantity).toFixed(2)]
+                          })]
+                        }, c.id);
+                      })
                     })]
                   })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("tbody", {
-                  children: cart.map(function (c) {
-                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("tr", {
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("td", {
-                        children: c.name
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("td", {
-                        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
-                          type: "text",
-                          className: "form-control form-control-sm qty",
-                          value: c.pivot.quantity,
-                          onChange: function onChange(event) {
-                            return _this10.handleChangeQty(c.id, event.target.value);
-                          }
-                        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
-                          className: "btn btn-danger btn-sm",
-                          onClick: function onClick() {
-                            return _this10.handleClickDelete(c.id);
-                          },
-                          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("i", {
-                            className: "fas fa-trash"
-                          })
-                        })]
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("td", {
-                        className: "text-right",
-                        children: [window.APP.currency_symbol, " ", (c.price * c.pivot.quantity).toFixed(2)]
-                      })]
-                    }, c.id);
-                  })
                 })]
               })
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-            className: "row",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-              className: "col",
-              children: [translations["total"], ":"]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-              className: "col text-right",
-              children: [window.APP.currency_symbol, " ", this.getTotal(cart)]
+              className: "mt-3",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+                className: "d-flex justify-content-between mb-2",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h5", {
+                  children: "Total:"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("h5", {
+                  children: [window.APP.currency_symbol, " ", this.getTotal(cart)]
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+                className: "d-flex",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
+                  type: "button",
+                  className: "btn btn-danger flex-grow-1 m-1",
+                  onClick: this.handleEmptyCart,
+                  disabled: !cart.length,
+                  children: "Cancel"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
+                  type: "button",
+                  className: "btn btn-primary flex-grow-1 m-1",
+                  onClick: this.handleClickSubmit,
+                  disabled: !cart.length,
+                  children: "Checkout"
+                })]
+              })]
             })]
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-            className: "row",
+            className: "col-md-7",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "col",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
-                type: "button",
-                className: "btn btn-danger btn-block",
-                onClick: this.handleEmptyCart,
-                disabled: !cart.length,
-                children: translations["cancel"]
+              className: "mb-3",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+                type: "text",
+                className: "form-control",
+                placeholder: "Search Products...",
+                onChange: this.handleChangeSearch,
+                onKeyDown: this.handleSeach
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-              className: "col",
-              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("button", {
-                type: "button",
-                className: "btn btn-primary btn-block",
-                disabled: !cart.length,
-                onClick: this.handleClickSubmit,
-                children: translations["checkout"]
+              className: "order-product d-flex flex-wrap gap-3",
+              children: products.map(function (p) {
+                return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+                  onClick: function onClick() {
+                    return _this10.addProductToCart(p.barcode);
+                  },
+                  className: "item card shadow-sm text-center p-2",
+                  style: {
+                    cursor: "pointer",
+                    width: "150px"
+                  },
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
+                    src: p.image_url,
+                    alt: p.name,
+                    className: "img-fluid mb-2",
+                    style: {
+                      height: "100px",
+                      objectFit: "cover"
+                    }
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("h6", {
+                    className: "mb-1",
+                    style: window.APP.warning_quantity > p.quantity ? {
+                      color: "red"
+                    } : {},
+                    children: [p.name, " (", p.quantity, ")"]
+                  })]
+                }, p.id);
               })
             })]
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-          className: "col-md-6 col-lg-8",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-            className: "mb-2",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
-              type: "text",
-              className: "form-control",
-              placeholder: translations["search_product"] + "...",
-              onChange: this.handleChangeSearch,
-              onKeyDown: this.handleSeach
-            })
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-            className: "order-product",
-            children: products.map(function (p) {
-              return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-                onClick: function onClick() {
-                  return _this10.addProductToCart(p.barcode);
-                },
-                className: "item",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("img", {
-                  src: p.image_url,
-                  alt: ""
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("h5", {
-                  style: window.APP.warning_quantity > p.quantity ? {
-                    color: "red"
-                  } : {},
-                  children: [p.name, "(", p.quantity, ")"]
-                })]
-              }, p.id);
-            })
-          })]
-        })]
+        })
       });
     }
   }]);
