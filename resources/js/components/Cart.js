@@ -118,6 +118,10 @@ class Cart extends Component {
         const total = cart.map((c) => c.pivot.quantity * c.price);
         return sum(total).toFixed(2);
     }
+    getMRPTotal(cart) {
+        const total = cart.map((c) => c.pivot.quantity * c.cost);
+        return sum(total).toFixed(2);
+    }
     handleClickDelete(product_id) {
         axios
             .post("/admin/cart/delete", { product_id, _method: "DELETE" })
@@ -185,28 +189,42 @@ class Cart extends Component {
                 });
         }
     }
-
     setCustomerId(event) {
         this.setState({ customer_id: event.target.value });
     }
     handleClickSubmit() {
+        const total = this.getTotal(this.state.cart); // Get the total amount from the cart
         Swal.fire({
             title: "Received Amount",
+            text: `Bill Total: ${total}`,
             input: "text",
-            inputValue: this.getTotal(this.state.cart),
+            inputPlaceholder: "Enter the received amount",
+            inputValidator: (value) => {
+                if (!value || isNaN(value) || value <= 0) {
+                    return "Please enter a valid amount!";
+                }
+            },
             cancelButtonText: "Cancel Pay",
             showCancelButton: true,
             confirmButtonText: "Confirm Pay",
             showLoaderOnConfirm: true,
-            preConfirm: (amount) => {
+            preConfirm: (receivedAmount) => {
+                receivedAmount = parseFloat(receivedAmount);
+                const balance = receivedAmount - total;
+
+                if (balance < 0) {
+                    Swal.showValidationMessage("Insufficient received amount!");
+                    return false;
+                }
+
                 return axios
                     .post("/admin/orders", {
                         customer_id: this.state.customer_id,
-                        amount,
+                        amount: receivedAmount,
                     })
                     .then((res) => {
                         this.loadCart();
-                        return res.data;
+                        return { ...res.data, balance }; // Pass balance in the result
                     })
                     .catch((err) => {
                         Swal.showValidationMessage(err.response.data.message);
@@ -215,7 +233,11 @@ class Cart extends Component {
             allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.value) {
-                //
+                Swal.fire({
+                    title: "Order Placed!",
+                    text: `Balance: ${result.value.balance}`,
+                    icon: "success",
+                });
             }
         });
     }
@@ -331,6 +353,14 @@ class Cart extends Component {
 
                         {/* Total and Actions */}
                         <div className="mt-3">
+                            <div className="d-flex justify-content-between mb-2 text-green">
+                                <h5>Total Discount:</h5>
+                                <h5>
+                                    {window.APP.currency_symbol}{" "}
+                                    {this.getMRPTotal(cart) -
+                                        this.getTotal(cart)}
+                                </h5>
+                            </div>
                             <div className="d-flex justify-content-between mb-2">
                                 <h5>Total:</h5>
                                 <h5>

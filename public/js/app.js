@@ -2322,6 +2322,14 @@ var Cart = /*#__PURE__*/function (_Component) {
       return (0,lodash__WEBPACK_IMPORTED_MODULE_4__.sum)(total).toFixed(2);
     }
   }, {
+    key: "getMRPTotal",
+    value: function getMRPTotal(cart) {
+      var total = cart.map(function (c) {
+        return c.pivot.quantity * c.cost;
+      });
+      return (0,lodash__WEBPACK_IMPORTED_MODULE_4__.sum)(total).toFixed(2);
+    }
+  }, {
     key: "handleClickDelete",
     value: function handleClickDelete(product_id) {
       var _this7 = this;
@@ -2420,21 +2428,36 @@ var Cart = /*#__PURE__*/function (_Component) {
     key: "handleClickSubmit",
     value: function handleClickSubmit() {
       var _this9 = this;
+      var total = this.getTotal(this.state.cart); // Get the total amount from the cart
       sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().fire({
         title: "Received Amount",
+        text: "Bill Total: ".concat(total),
         input: "text",
-        inputValue: this.getTotal(this.state.cart),
+        inputPlaceholder: "Enter the received amount",
+        inputValidator: function inputValidator(value) {
+          if (!value || isNaN(value) || value <= 0) {
+            return "Please enter a valid amount!";
+          }
+        },
         cancelButtonText: "Cancel Pay",
         showCancelButton: true,
         confirmButtonText: "Confirm Pay",
         showLoaderOnConfirm: true,
-        preConfirm: function preConfirm(amount) {
+        preConfirm: function preConfirm(receivedAmount) {
+          receivedAmount = parseFloat(receivedAmount);
+          var balance = receivedAmount - total;
+          if (balance < 0) {
+            sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().showValidationMessage("Insufficient received amount!");
+            return false;
+          }
           return axios__WEBPACK_IMPORTED_MODULE_2___default().post("/admin/orders", {
             customer_id: _this9.state.customer_id,
-            amount: amount
+            amount: receivedAmount
           }).then(function (res) {
             _this9.loadCart();
-            return res.data;
+            return _objectSpread(_objectSpread({}, res.data), {}, {
+              balance: balance
+            }); // Pass balance in the result
           })["catch"](function (err) {
             sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().showValidationMessage(err.response.data.message);
           });
@@ -2444,7 +2467,11 @@ var Cart = /*#__PURE__*/function (_Component) {
         }
       }).then(function (result) {
         if (result.value) {
-          //
+          sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().fire({
+            title: "Order Placed!",
+            text: "Balance: ".concat(result.value.balance),
+            icon: "success"
+          });
         }
       });
     }
@@ -2564,6 +2591,13 @@ var Cart = /*#__PURE__*/function (_Component) {
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
               className: "mt-3",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+                className: "d-flex justify-content-between mb-2 text-green",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h5", {
+                  children: "Total Discount:"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("h5", {
+                  children: [window.APP.currency_symbol, " ", this.getMRPTotal(cart) - this.getTotal(cart)]
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                 className: "d-flex justify-content-between mb-2",
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h5", {
                   children: "Total:"
