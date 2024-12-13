@@ -20,6 +20,16 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach($ordersAnnum as $orderA)
+                <tr>
+                    <td>Annual Report</td>
+                    <td>{{ $orderA->year }}</td>
+                    <td></td>
+                    <td>
+
+                    </td>
+                </tr>
+                @endforeach
                 @forelse ($orders as $order)
                 <tr>
                     <td>Monthly Report</td>

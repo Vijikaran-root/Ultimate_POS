@@ -21,9 +21,13 @@ class ReportController extends Controller
             ->orderByRaw('YEAR(created_at) DESC, MONTH(created_at) DESC')
             ->get();
         //get the daily turnover sales
+        $ordersAnnum = Order::selectRaw('YEAR(created_at) as year, COUNT(*) as total')
+            ->groupByRaw('YEAR(created_at)')
+            ->orderByRaw('YEAR(created_at) DESC')
+            ->get();
 
 
-        return view('report.index', compact('orders'));
+        return view('report.index', compact('orders', 'ordersAnnum'));
     }
     public function viewReport($month, $year)
     {
