@@ -1,53 +1,53 @@
 <style>
-body {
-    font-family: Arial, sans-serif;
-}
+    body {
+        font-family: Arial, sans-serif;
+    }
 
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
 
-.table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-    font-size: small;
-}
+    .table th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        font-size: small;
+    }
 
-.table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-    font-size: smaller;
-}
+    .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        font-size: smaller;
+    }
 
-.table thead {
-    background-color: #f2f2f2;
-}
+    .table thead {
+        background-color: #f2f2f2;
+    }
 
-.table-primary {
-    background-color: #d9edf7;
-    font-weight: bold;
-}
+    .table-primary {
+        background-color: #d9edf7;
+        font-weight: bold;
+    }
 
-.table-success {
-    background-color: #dff0d8;
-    font-weight: bold;
-}
+    .table-success {
+        background-color: #dff0d8;
+        font-weight: bold;
+    }
 
-.thead-dark th {
-    background-color: #343a40;
-    color: white;
-}
+    .thead-dark th {
+        background-color: #343a40;
+        color: white;
+    }
 </style>
-<h1>{{ config('settings.app_name') }} Report for {{ $month }} {{ $year }}</h1>
+<h1>{{ config('settings.app_name') }} Monthly Report for {{ $month }} {{ $year }}</h1>
 <div class="container">
     <h1>P/L Statement</h1>
     <table class="table table-bordered table-hover">

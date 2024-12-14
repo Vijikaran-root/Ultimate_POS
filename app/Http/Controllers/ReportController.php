@@ -351,4 +351,293 @@ class ReportController extends Controller
         // Return the generated PDF as a download
         return $pdf->download($fileName);
     }
+    //viewSofp
+    public function viewSofp($year)
+    {
+        $orders = Order::whereRaw('YEAR(created_at) = ?', [$year])->get();
+        $total = $orders->map(function ($i) {
+            return $i->total();
+        })->sum();
+        $receivedAmount = $orders->map(function ($i) {
+            return $i->receivedAmount();
+        })->sum();
+        $dailyProfit = OrderItem::selectRaw('DATE(order_items.created_at) as date, SUM(order_items.price - (order_items.quantity * inventory.cost)) as profit')
+            ->join('products', 'order_items.product_id', '=', 'products.id') // Join products to access inventory
+            ->join('inventory', 'products.id', '=', 'inventory.product_id') // Join inventories to get cost
+            ->whereRaw('YEAR(order_items.created_at) = ?', [$year]) // Filter by month and year
+            ->groupByRaw('DATE(order_items.created_at)')
+            ->orderByRaw('DATE(order_items.created_at) DESC')
+            ->get();
+        //get the sum of $dailyProfit
+        $dailyProfitSum = $dailyProfit->map(function ($i) {
+            return $i->profit;
+        })->sum();
+        $cogs = $total - $dailyProfitSum;
+        $grossProfit = $total - $cogs;
+        $dailyTurnover = OrderItem::selectRaw('DATE(created_at) as date, SUM(price) as total')
+            ->whereRaw('YEAR(created_at) = ?', [$year]) // Filter by month and year
+            ->groupByRaw('DATE(created_at)')
+            ->orderByRaw('DATE(created_at) DESC')
+            ->get();
+        //get the cash purchases from cash model
+        $cashDetails = Cash::whereRaw('YEAR(created_at) = ?', [$year])->get();
+        // $cashPurchases where $cashDetails->name = 'cash purchase'
+        $cashPurchases = $cashDetails->where('name', 'Cash Purchases')->sum('value');
+        //Paid Suppliers
+        $paidSuppliers = $cashDetails->where('name', 'Paid Suppliers')->sum('value');
+        //Other Expenses
+        $otherExpenses = $cashDetails->where('name', 'Other Expenses')->sum('value');
+        //get all Other Expenses from $cashDetails
+        $otherExpensesDetails = $cashDetails->where('name', 'Other Expenses');
+        //New Capital
+        $newCapital = $cashDetails->where('name', 'New Capital')->sum('value');
+        //Purchase Return
+        $purchaseReturn = $cashDetails->where('name', 'Purchase Return')->sum('value');
+        //Drawings
+        $drawings = $cashDetails->where('name', 'Drawings')->sum('value');
+        // Calculate totals for B/F, C/D, B/D previous year and next year
+        $previousYear = date('Y', strtotime("$year-01-01 -1 year"));
+        $nextYear = date('Y', strtotime("$year-01-01 +1 year"));
+        // Fetch orders from the previous year
+        $previousYearOrders = Order::whereRaw('YEAR(created_at) = ?', [$previousYear])->get();
+        // Calculate the total for the previous year
+        $previousYearTotal = $previousYearOrders->map(function ($order) {
+            return $order->total(); // Assuming the `total()` method calculates the order total
+        })->sum();
+        $sum = $previousYearTotal + $total + $newCapital + $purchaseReturn;
+        $sum1 = $cashPurchases + $paidSuppliers + $otherExpenses + $drawings;
+        $difference = abs($sum - $sum1);
+        $previousCashDetails = Cash::whereRaw('YEAR(created_at) = ?', [$previousYear])->get();
+        $previousDebit = $previousYearTotal + $previousCashDetails->where('name', 'New Capital')->sum('value') + $previousCashDetails->where('name', 'Purchase Return')->sum('value');
+        $previousCredit = $previousCashDetails->where('name', 'Cash Purchases')->sum('value') + $previousCashDetails->where('name', 'Paid Suppliers')->sum('value') + $previousCashDetails->where('name', 'Other Expenses')->sum('value') + $previousCashDetails->where('name', 'Drawings')->sum('value');
+        $bf = $previousDebit - $previousCredit;
+        if ($sum > $sum1) {
+            //$bf for previous month $bd
+            $bf1 = $bf;
+            $cd = $sum - $sum1;       // C/D matches total credit
+            $bd = $cd; // B/D equals debit side adjusted for difference
+        } else {
+            $bf1 = $bf;      // B/F is based on the larger debit
+            $cd = $sum1 - $sum;      // C/D matches total debit
+            $bd = $cd; // B/D equals credit side adjusted for difference
+        }
+        $topProducts = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->select('products.id', 'products.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+            ->whereRaw('YEAR(orders.created_at) = ?', [$year])
+            ->groupBy('products.id', 'products.name')
+            ->orderByDesc('total_quantity')
+            ->take(5)
+            ->get();
+        // $bottomProducts = Product:: top 5 lowest selling products
+        $bottomProducts = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->select('products.id', 'products.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+            ->whereRaw('YEAR(orders.created_at) = ?', [$year])
+            ->groupBy('products.id', 'products.name')
+            ->orderBy('total_quantity', 'asc') // Ascending order to get the lowest selling
+            ->take(5)
+            ->get();
+
+        $cashinhand = $difference;
+        // inventoryValue
+        $inventoryValue = Inventory::all()->sum(function ($product) {
+            return $product->reorder_level * $product->cost;
+        });
+
+        $totalAssets = $cashinhand + $inventoryValue - $cogs;
+
+        $capital = $newCapital;
+        $netprofit = $dailyProfitSum - $otherExpenses;
+        $totalEquity = $capital + $netprofit - $drawings;
+        $supplierBalance = $inventoryValue - $paidSuppliers - $cashPurchases;
+        $totalLiabilities = $supplierBalance;
+        return view(
+            'report.sofp',
+            ['year' => $year,],
+            compact(
+                'totalAssets',
+                'totalEquity',
+                'totalLiabilities',
+                'supplierBalance',
+                'capital',
+                'netprofit',
+                'inventoryValue',
+                'cashinhand',
+                'topProducts',
+                'bottomProducts',
+                'dailyProfitSum',
+                'dailyProfit',
+                'previousYear',
+                'nextYear',
+                'otherExpensesDetails',
+                'sum',
+                'sum1',
+                'difference',
+                'bf',
+                'bf1',
+                'cd',
+                'bd',
+                'drawings',
+                'purchaseReturn',
+                'newCapital',
+                'otherExpenses',
+                'paidSuppliers',
+                'cashPurchases',
+                'dailyTurnover',
+                'orders',
+                'year',
+                'total',
+                'receivedAmount',
+                'cogs',
+                'grossProfit'
+            )
+        );
+    }
+    public function downloadSofp($year)
+    {
+        $orders = Order::whereRaw('YEAR(created_at) = ?', [$year])->get();
+        $total = $orders->map(function ($i) {
+            return $i->total();
+        })->sum();
+        $receivedAmount = $orders->map(function ($i) {
+            return $i->receivedAmount();
+        })->sum();
+        $dailyProfit = OrderItem::selectRaw('DATE(order_items.created_at) as date, SUM(order_items.price - (order_items.quantity * inventory.cost)) as profit')
+            ->join('products', 'order_items.product_id', '=', 'products.id') // Join products to access inventory
+            ->join('inventory', 'products.id', '=', 'inventory.product_id') // Join inventories to get cost
+            ->whereRaw('YEAR(order_items.created_at) = ?', [$year]) // Filter by month and year
+            ->groupByRaw('DATE(order_items.created_at)')
+            ->orderByRaw('DATE(order_items.created_at) DESC')
+            ->get();
+        //get the sum of $dailyProfit
+        $dailyProfitSum = $dailyProfit->map(function ($i) {
+            return $i->profit;
+        })->sum();
+        $cogs = $total - $dailyProfitSum;
+        $grossProfit = $total - $cogs;
+        $dailyTurnover = OrderItem::selectRaw('DATE(created_at) as date, SUM(price) as total')
+            ->whereRaw('YEAR(created_at) = ?', [$year]) // Filter by month and year
+            ->groupByRaw('DATE(created_at)')
+            ->orderByRaw('DATE(created_at) DESC')
+            ->get();
+        //get the cash purchases from cash model
+        $cashDetails = Cash::whereRaw('YEAR(created_at) = ?', [$year])->get();
+        // $cashPurchases where $cashDetails->name = 'cash purchase'
+        $cashPurchases = $cashDetails->where('name', 'Cash Purchases')->sum('value');
+        //Paid Suppliers
+        $paidSuppliers = $cashDetails->where('name', 'Paid Suppliers')->sum('value');
+        //Other Expenses
+        $otherExpenses = $cashDetails->where('name', 'Other Expenses')->sum('value');
+        //get all Other Expenses from $cashDetails
+        $otherExpensesDetails = $cashDetails->where('name', 'Other Expenses');
+        //New Capital
+        $newCapital = $cashDetails->where('name', 'New Capital')->sum('value');
+        //Purchase Return
+        $purchaseReturn = $cashDetails->where('name', 'Purchase Return')->sum('value');
+        //Drawings
+        $drawings = $cashDetails->where('name', 'Drawings')->sum('value');
+        // Calculate totals for B/F, C/D, B/D previous year and next year
+        $previousYear = date('Y', strtotime("$year-01-01 -1 year"));
+        $nextYear = date('Y', strtotime("$year-01-01 +1 year"));
+        // Fetch orders from the previous year
+        $previousYearOrders = Order::whereRaw('YEAR(created_at) = ?', [$previousYear])->get();
+        // Calculate the total for the previous year
+        $previousYearTotal = $previousYearOrders->map(function ($order) {
+            return $order->total(); // Assuming the `total()` method calculates the order total
+        })->sum();
+        $sum = $previousYearTotal + $total + $newCapital + $purchaseReturn;
+        $sum1 = $cashPurchases + $paidSuppliers + $otherExpenses + $drawings;
+        $difference = abs($sum - $sum1);
+        $previousCashDetails = Cash::whereRaw('YEAR(created_at) = ?', [$previousYear])->get();
+        $previousDebit = $previousYearTotal + $previousCashDetails->where('name', 'New Capital')->sum('value') + $previousCashDetails->where('name', 'Purchase Return')->sum('value');
+        $previousCredit = $previousCashDetails->where('name', 'Cash Purchases')->sum('value') + $previousCashDetails->where('name', 'Paid Suppliers')->sum('value') + $previousCashDetails->where('name', 'Other Expenses')->sum('value') + $previousCashDetails->where('name', 'Drawings')->sum('value');
+        $bf = $previousDebit - $previousCredit;
+        if ($sum > $sum1) {
+            //$bf for previous month $bd
+            $bf1 = $bf;
+            $cd = $sum - $sum1;       // C/D matches total credit
+            $bd = $cd; // B/D equals debit side adjusted for difference
+        } else {
+            $bf1 = $bf;      // B/F is based on the larger debit
+            $cd = $sum1 - $sum;      // C/D matches total debit
+            $bd = $cd; // B/D equals credit side adjusted for difference
+        }
+        $topProducts = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->select('products.id', 'products.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+            ->whereRaw('YEAR(orders.created_at) = ?', [$year])
+            ->groupBy('products.id', 'products.name')
+            ->orderByDesc('total_quantity')
+            ->take(5)
+            ->get();
+        // $bottomProducts = Product:: top 5 lowest selling products
+        $bottomProducts = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->select('products.id', 'products.name', DB::raw('SUM(order_items.quantity) as total_quantity'))
+            ->whereRaw('YEAR(orders.created_at) = ?', [$year])
+            ->groupBy('products.id', 'products.name')
+            ->orderBy('total_quantity', 'asc') // Ascending order to get the lowest selling
+            ->take(5)
+            ->get();
+
+        $cashinhand = $difference;
+        // inventoryValue
+        $inventoryValue = Inventory::all()->sum(function ($product) {
+            return $product->reorder_level * $product->cost;
+        });
+
+        $totalAssets = $cashinhand + $inventoryValue - $cogs;
+
+        $capital = $newCapital;
+        $netprofit = $dailyProfitSum - $otherExpenses;
+        $totalEquity = $capital + $netprofit - $drawings;
+        $supplierBalance = $inventoryValue - $paidSuppliers - $cashPurchases;
+        $totalLiabilities = $supplierBalance;
+        $data = [
+            'year' => $year,
+            'totalAssets' => $totalAssets,
+            'totalEquity' => $totalEquity,
+            'totalLiabilities' => $totalLiabilities,
+            'supplierBalance' => $supplierBalance,
+            'capital' => $capital,
+            'netprofit' => $netprofit,
+            'inventoryValue' => $inventoryValue,
+            'cashinhand' => $cashinhand,
+            'topProducts' => $topProducts,
+            'bottomProducts' => $bottomProducts,
+            'dailyProfitSum' => $dailyProfitSum,
+            'dailyProfit' => $dailyProfit,
+            'previousYear' => $previousYear,
+            'nextYear' => $nextYear,
+            'otherExpensesDetails' => $otherExpensesDetails,
+            'sum' => $sum,
+            'sum1' => $sum1,
+            'difference' => $difference,
+            'bf' => $bf,
+            'bf1' => $bf1,
+            'cd' => $cd,
+            'bd' => $bd,
+            'drawings' => $drawings,
+            'purchaseReturn' => $purchaseReturn,
+            'newCapital' => $newCapital,
+            'otherExpenses' => $otherExpenses,
+            'paidSuppliers' => $paidSuppliers,
+            'cashPurchases' => $cashPurchases,
+            'dailyTurnover' => $dailyTurnover,
+            'orders' => $orders,
+            'year' => $year,
+            'total' => $total,
+            'receivedAmount' => $receivedAmount,
+            'cogs' => $cogs,
+            'grossProfit' => $grossProfit,
+        ];
+        $pdf = Pdf::loadView('report.sofp-download', $data);
+        $fileName = "AnnualReport{$year}.pdf";
+        return $pdf->download($fileName);
+    }
 }

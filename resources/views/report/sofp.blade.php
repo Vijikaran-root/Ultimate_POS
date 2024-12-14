@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', "Monthly Report - {$month} {$year}")
-@section('content-header', "Monthly Report - {$month} {$year}")
+@section('title', "Annual Report {$year}")
+@section('content-header', "Annual Report {$year}")
 
 
 @section('css')
@@ -9,7 +9,79 @@
 @endsection
 @section('content')
 <div class="container">
-    <h1>P/L Statement for {{ $month }} {{ $year }}</h1>
+    <h1>Statement of Financial Position</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="text-lg text-bold">
+                <td colspan="3">Assets</td>
+            </tr>
+            <tr>
+                <td>Current Assets</td>
+                <td>Cash in Hand</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($cashinhand, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Current Assets</td>
+                <td>Closing Stock</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($inventoryValue, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Assets</td>
+                <td></td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($totalAssets, 2) }}</td>
+            </tr>
+            <tr class="text-lg text-bold">
+                <td colspan="3">Equity</td>
+            </tr>
+            <tr>
+                <td>Capital</td>
+                <td>Capital</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($capital, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Retained Earnings</td>
+                <td>Net Profit</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($netprofit,2)}}</td>
+            </tr>
+            <tr>
+                <td>Drawings</td>
+                <td></td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($drawings, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Equity</td>
+                <td></td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($totalEquity, 2) }}</td>
+            </tr>
+            <tr class="text-lg text-bold">
+                <td colspan="3">Liabilities</td>
+            </tr>
+            <tr>
+                <td>Current Liabilities</td>
+                <td>Suppliers Balance</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($supplierBalance, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Liabilities</td>
+                <td></td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($totalLiabilities, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Equity & Liabilities</td>
+                <td>Total Equity + Total Liabilities</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($totalEquity + $totalLiabilities, 2) }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h1>P/L Statement</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
@@ -58,8 +130,7 @@
 
         </tbody>
     </table>
-
-    <h1>Cash Statement for {{ $month }} {{ $year }}</h1>
+    <h1>Cash Statement</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
@@ -74,7 +145,7 @@
         <tbody>
             <!-- Brought Forward (B/F) -->
             @if($sum>$sum1) <tr>
-                <td>{{ $previousMonth }} {{ $previousYear }}</td>
+                <td> {{ $previousYear }}</td>
                 <td>B/F</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($bf1, 2) }}</td>
                 <td></td>
@@ -86,7 +157,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{ $previousMonth }} {{ $previousYear }}</td>
+                <td> {{ $previousYear }}</td>
                 <td>B/F</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($bf1, 2) }}</td>
             </tr>
@@ -94,26 +165,26 @@
 
             <!-- Credit and Debit Entries -->
             <tr>
-                <td>{{ $month }} {{ $year }}</td>
+                <td> {{ $year }}</td>
                 <td>Total Sales</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($total, 2) }}</td>
-                <td>{{ $month }} {{ $year }}</td>
+                <td> {{ $year }}</td>
                 <td>Cash Purchases</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($cashPurchases, 2) }}</td>
             </tr>
             <tr>
-                <td>{{ $month }} {{ $year }}</td>
+                <td> {{ $year }}</td>
                 <td>Additional Capital</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($newCapital, 2) }}</td>
-                <td>{{ $month }} {{ $year }}</td>
+                <td> {{ $year }}</td>
                 <td>Paid Suppliers</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($paidSuppliers, 2) }}</td>
             </tr>
             <tr>
-                <td>{{ $month }} {{ $year }}</td>
+                <td> {{ $year }}</td>
                 <td>Purchase Return</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($purchaseReturn, 2) }}</td>
-                <td>{{ $month }} {{ $year }}</td>
+                <td> {{ $year }}</td>
                 <td>Other Expenses</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($otherExpenses, 2) }}</td>
             </tr>
@@ -121,13 +192,13 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{ $month }} {{ $year }}</td>
+                <td> {{ $year }}</td>
                 <td>Drawings</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($drawings, 2) }}</td>
             </tr>
 
             @if($sum<$sum1) <tr>
-                <td>{{ $month }} {{ $year }}</td>
+                <td> {{ $year }}</td>
                 <td>C/D</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($cd, 2) }}</td>
                 <td></td>
@@ -139,7 +210,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{ $month }} {{ $year }}</td>
+                    <td> {{ $year }}</td>
                     <td>C/D</td>
                     <td>{{ config('settings.currency_symbol') }} {{ number_format($cd, 2) }}</td>
                 </tr>
@@ -157,7 +228,7 @@
 
                 <!-- Brought Down (B/D) -->
                 @if($sum>$sum1) <tr>
-                    <td>{{ $nextMonth }} {{ $nextYear }}</td>
+                    <td>{{ $nextYear }}</td>
                     <td>B/D</td>
                     <td>{{ config('settings.currency_symbol') }} {{ number_format($bd, 2) }}</td>
                     <td></td>
@@ -169,7 +240,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{ $nextMonth }} {{ $nextYear }}</td>
+                    <td>{{ $nextYear }}</td>
                     <td>B/D</td>
                     <td>{{ config('settings.currency_symbol') }} {{ number_format($bd, 2) }}</td>
 
@@ -177,7 +248,7 @@
                 @endif
         </tbody>
     </table>
-    <h1>Daily Turnover for {{ $month }} {{ $year }}</h1>
+    <h1>Daily Turnover</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
@@ -198,7 +269,7 @@
             </tr>
         </tbody>
     </table>
-    <h1>Daily Profit for {{ $month }} {{ $year }}</h1>
+    <h1>Daily Profit</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
@@ -254,6 +325,4 @@
         </tbody>
     </table>
 </div>
-
-
 @endsection
