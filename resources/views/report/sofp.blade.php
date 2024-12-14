@@ -9,6 +9,79 @@
 @endsection
 @section('content')
 <div class="container">
+    <h1>Ratios</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Current Ratio</td>
+                <td>Current Assets / Current Liability</td>
+                <td>{{ number_format($totalAssets/$totalLiabilities,2) }} : 1
+                </td>
+            </tr>
+            <tr>
+                <td>Quick Ratio</td>
+                <td>Current Assets - (Closing Stock) / Current Liability</td>
+                <td>{{ number_format($cashinhand/$totalLiabilities,2) }} : 1
+                </td>
+            </tr>
+            <tr>
+                <td>Gross Profit Margin</td>
+                <td>(Gross Profit / Revenue) x 100</td>
+                <td>{{ number_format($grossProfit/$total*100,2) }}%
+                </td>
+            </tr>
+            <tr>
+                <td>Net Profit Margin</td>
+                <td>(Net Profit / Revenue) x 100</td>
+                <td>{{ number_format($netprofit/$total*100,2) }}%
+                </td>
+            </tr>
+            <tr>
+                <td>Return On Assets (ROA)</td>
+                <td>(Net Profit / Total Assets) x 100</td>
+                <td>{{ number_format($netprofit/$totalAssets*100,2) }}%
+                </td>
+            </tr>
+            <tr>
+                <td>Return On Equity (ROE)</td>
+                <td>(Net Profit / Capital) x 100</td>
+                <td>{{ number_format($netprofit/$capital*100, 2) }}%
+                </td>
+            </tr>
+            <tr>
+                <td>Invenntory Turnover Ratio</td>
+                <td>Cost Of Goods Sold / Average Inventory</td>
+                <td>{{ number_format($cogs/($inventoryValue-$cogs/$cogs), 2) }}%
+                </td>
+            </tr>
+            <tr>
+                <td>Invenntory Turnover Period</td>
+                <td>Average Inventory / Cost Of Goods Sold</td>
+                <td>{{ number_format(($inventoryValue-$cogs/$cogs)/$cogs, 2) }} Days
+                </td>
+            </tr>
+            <tr>
+                <td>Debt Ratio</td>
+                <td>Total Liabilities / Total Assets</td>
+                <td>{{ number_format($totalLiabilities/$totalAssets, 2) }}%
+                </td>
+            </tr>
+            <tr>
+                <td>Debt Equity Ratio</td>
+                <td>Total Liabilities / Capital</td>
+                <td>{{ number_format($totalLiabilities/$capital, 2) }}%
+                </td>
+            </tr>
+            </tr>
+        </tbody>
+    </table>
     <h1>Statement of Financial Position</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
@@ -248,6 +321,48 @@
                 @endif
         </tbody>
     </table>
+    <h1>Monthly Turnover</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Months</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($monthlyTurnover as $months => $month)
+            <tr>
+                <td>{{ $month->month }}</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($month->total,2) }}</td>
+            </tr>
+            @endforeach
+            <tr class="table-primary">
+                <td>Total</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($total,2) }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h1>Monthly Profit</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Months</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($monthlyProfit as $months => $month)
+            <tr>
+                <td>{{ $month->month }}</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($month->profit,2) }}</td>
+            </tr>
+            @endforeach
+            <tr class="table-primary">
+                <td>Total</td>
+                <td>{{ config('settings.currency_symbol') }} {{ number_format($monthlyProfitSum,2) }}</td>
+            </tr>
+        </tbody>
+    </table>
     <h1>Daily Turnover</h1>
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
@@ -288,6 +403,40 @@
                 <td>Total</td>
                 <td>{{ config('settings.currency_symbol') }} {{ number_format($dailyProfitSum,2) }}</td>
             </tr>
+        </tbody>
+    </table>
+    <h1>Top 5 Highest Monthly Turnover</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Month</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($top5MonthlyTurnover as $top)
+            <tr>
+                <td>{{ $top->month }}</td>
+                <td>{{config('settings.currency_symbol')}}{{ number_format($top->total, 2) }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <h1>Top 5 Lowest Monthly Turnover</h1>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Month</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($lowest5MonthlyTurnover as $low)
+            <tr>
+                <td>{{ $low->month }}</td>
+                <td>{{config('settings.currency_symbol')}}{{ number_format($low->total, 2) }}</td>
+            </tr>
+            @endforeach
         </tbody>
     </table>
     <h1>Top 5 Highest Selling Products</h1>

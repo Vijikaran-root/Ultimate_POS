@@ -37,7 +37,7 @@
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('customers.index') }}" class="nav-link {{ activeSegment('customers') }}">
-                        <i class="nav-icon fas fa-users"></i>
+                        <i class="nav-icon fas fa-id-card"></i>
                         <p>Customers</p>
                     </a>
                 </li>
@@ -55,7 +55,7 @@
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('orders.index') }}" class="nav-link {{ activeSegment('orders') }}">
-                        <i class="nav-icon fas fa-chart-line"></i>
+                        <i class="nav-icon fa fa-archive"></i>
                         <p>Orders</p>
                     </a>
                 </li>
@@ -67,19 +67,19 @@
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('due.index') }}" class="nav-link {{ activeSegment('due') }}">
-                        <i class="nav-icon fas fa-chart-line"></i>
+                        <i class="nav-icon fas fa-calendar-check"></i>
                         <p>Due Settlement</p>
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('cash.index') }}" class="nav-link {{ activeSegment('cash') }}">
-                        <i class="nav-icon fas fa-chart-line"></i>
+                        <i class="nav-icon fas fa-money-bill-alt"></i>
                         <p>Cash In/Out</p>
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('report.index') }}" class="nav-link {{ activeSegment('report') }}">
-                        <i class="nav-icon fas fa-chart-line"></i>
+                        <i class="nav-icon fa fa-flag"></i>
                         <p>Report</p>
                     </a>
                 </li>

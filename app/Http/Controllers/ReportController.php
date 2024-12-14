@@ -346,7 +346,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('report.download', $data);
 
         // Set file name
-        $fileName = "Profit_and_Loss_{$month}_{$year}.pdf";
+        $fileName = "MonthlyReport{$month}{$year}.pdf";
 
         // Return the generated PDF as a download
         return $pdf->download($fileName);
@@ -355,11 +355,40 @@ class ReportController extends Controller
     public function viewSofp($year)
     {
         $orders = Order::whereRaw('YEAR(created_at) = ?', [$year])->get();
+        //get the sum(amount) in orders monthly in $year
+
+        $monthlyTurnover = OrderItem::selectRaw('MONTHNAME(created_at) as month, SUM(price) as total')
+            ->whereYear('created_at', $year)
+            ->groupBy(DB::raw('MONTHNAME(created_at)'))
+            ->orderBy(DB::raw('MONTH(created_at)')) // Order by actual month number for correct sequence
+            ->get();
+        $top5MonthlyTurnover = OrderItem::selectRaw('MONTHNAME(created_at) as month, SUM(price) as total')
+            ->whereYear('created_at', $year)
+            ->groupBy(DB::raw('MONTHNAME(created_at)'))
+            ->orderByDesc('total') // Order by turnover in descending order
+            ->limit(5)            // Get the top 5 records
+            ->get();
+        $lowest5MonthlyTurnover = OrderItem::selectRaw('MONTHNAME(created_at) as month, SUM(price) as total')
+            ->whereYear('created_at', $year)
+            ->groupBy(DB::raw('MONTHNAME(created_at)'))
+            ->orderBy('total')   // Order by turnover in ascending order
+            ->limit(5)           // Get the top 5 lowest records
+            ->get();
         $total = $orders->map(function ($i) {
             return $i->total();
         })->sum();
         $receivedAmount = $orders->map(function ($i) {
             return $i->receivedAmount();
+        })->sum();
+        $monthlyProfit = OrderItem::selectRaw('MONTHNAME(order_items.created_at) as month, SUM(order_items.price - (order_items.quantity * inventory.cost)) as profit')
+            ->join('products', 'order_items.product_id', '=', 'products.id') // Join products table
+            ->join('inventory', 'products.id', '=', 'inventory.product_id') // Join inventory table to get cost
+            ->whereYear('order_items.created_at', $year) // Filter by year
+            ->groupBy(DB::raw('MONTHNAME(order_items.created_at)')) // Group by month name
+            ->orderBy(DB::raw('MONTH(order_items.created_at)')) // Order by month number for proper order
+            ->get();
+        $monthlyProfitSum = $monthlyProfit->map(function ($i) {
+            return $i->profit;
         })->sum();
         $dailyProfit = OrderItem::selectRaw('DATE(order_items.created_at) as date, SUM(order_items.price - (order_items.quantity * inventory.cost)) as profit')
             ->join('products', 'order_items.product_id', '=', 'products.id') // Join products to access inventory
@@ -458,6 +487,11 @@ class ReportController extends Controller
             'report.sofp',
             ['year' => $year,],
             compact(
+                'monthlyProfitSum',
+                'monthlyProfit',
+                'lowest5MonthlyTurnover',
+                'top5MonthlyTurnover',
+                'monthlyTurnover',
                 'totalAssets',
                 'totalEquity',
                 'totalLiabilities',
@@ -499,6 +533,33 @@ class ReportController extends Controller
     public function downloadSofp($year)
     {
         $orders = Order::whereRaw('YEAR(created_at) = ?', [$year])->get();
+        $monthlyTurnover = OrderItem::selectRaw('MONTHNAME(created_at) as month, SUM(price) as total')
+            ->whereYear('created_at', $year)
+            ->groupBy(DB::raw('MONTHNAME(created_at)'))
+            ->orderBy(DB::raw('MONTH(created_at)')) // Order by actual month number for correct sequence
+            ->get();
+        $top5MonthlyTurnover = OrderItem::selectRaw('MONTHNAME(created_at) as month, SUM(price) as total')
+            ->whereYear('created_at', $year)
+            ->groupBy(DB::raw('MONTHNAME(created_at)'))
+            ->orderByDesc('total') // Order by turnover in descending order
+            ->limit(5)            // Get the top 5 records
+            ->get();
+        $lowest5MonthlyTurnover = OrderItem::selectRaw('MONTHNAME(created_at) as month, SUM(price) as total')
+            ->whereYear('created_at', $year)
+            ->groupBy(DB::raw('MONTHNAME(created_at)'))
+            ->orderBy('total')   // Order by turnover in ascending order
+            ->limit(5)           // Get the top 5 lowest records
+            ->get();
+        $monthlyProfit = OrderItem::selectRaw('MONTHNAME(order_items.created_at) as month, SUM(order_items.price - (order_items.quantity * inventory.cost)) as profit')
+            ->join('products', 'order_items.product_id', '=', 'products.id') // Join products table
+            ->join('inventory', 'products.id', '=', 'inventory.product_id') // Join inventory table to get cost
+            ->whereYear('order_items.created_at', $year) // Filter by year
+            ->groupBy(DB::raw('MONTHNAME(order_items.created_at)')) // Group by month name
+            ->orderBy(DB::raw('MONTH(order_items.created_at)')) // Order by month number for proper order
+            ->get();
+        $monthlyProfitSum = $monthlyProfit->map(function ($i) {
+            return $i->profit;
+        })->sum();
         $total = $orders->map(function ($i) {
             return $i->total();
         })->sum();
@@ -599,6 +660,11 @@ class ReportController extends Controller
         $supplierBalance = $inventoryValue - $paidSuppliers - $cashPurchases;
         $totalLiabilities = $supplierBalance;
         $data = [
+            'monthlyProfitSum' => $monthlyProfitSum,
+            'monthlyProfit' => $monthlyProfit,
+            'lowest5MonthlyTurnover' => $lowest5MonthlyTurnover,
+            'top5MonthlyTurnover' => $top5MonthlyTurnover,
+            'monthlyTurnover' => $monthlyTurnover,
             'year' => $year,
             'totalAssets' => $totalAssets,
             'totalEquity' => $totalEquity,
