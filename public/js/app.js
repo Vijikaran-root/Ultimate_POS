@@ -2434,11 +2434,6 @@ var Cart = /*#__PURE__*/function (_Component) {
         text: "Bill Total: ".concat(total),
         input: "text",
         inputPlaceholder: "Enter the received amount",
-        inputValidator: function inputValidator(value) {
-          if (!value || isNaN(value) || value <= 0) {
-            return "Please enter a valid amount!";
-          }
-        },
         cancelButtonText: "Cancel Pay",
         showCancelButton: true,
         confirmButtonText: "Confirm Pay",
@@ -2446,10 +2441,6 @@ var Cart = /*#__PURE__*/function (_Component) {
         preConfirm: function preConfirm(receivedAmount) {
           receivedAmount = parseFloat(receivedAmount);
           var balance = receivedAmount - total;
-          if (balance < 0) {
-            sweetalert2__WEBPACK_IMPORTED_MODULE_3___default().showValidationMessage("Insufficient received amount!");
-            return false;
-          }
           return axios__WEBPACK_IMPORTED_MODULE_2___default().post("/admin/orders", {
             customer_id: _this9.state.customer_id,
             amount: receivedAmount
@@ -2503,20 +2494,16 @@ var Cart = /*#__PURE__*/function (_Component) {
                   value: barcode,
                   onChange: this.handleOnChangeBarcode
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("select", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("select", {
                 className: "form-control",
                 onChange: this.setCustomerId,
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
-                  value: "",
-                  disabled: true,
-                  selected: true,
-                  children: "Select Customer"
-                }), customers.map(function (cus) {
+                children: customers.map(function (cus) {
                   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
+                    selected: true,
                     value: cus.id,
                     children: "".concat(cus.first_name, " ").concat(cus.last_name)
                   }, cus.id);
-                })]
+                })
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
               className: "user-cart d-flex flex-column h-screen overflow-hidden",

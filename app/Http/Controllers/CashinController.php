@@ -28,7 +28,7 @@ class CashinController extends Controller
                 DB::raw('SUM(order_items.price) as total_price')
             )
             ->groupBy('orders.id', 'orders.customer_id', 'payments.amount') // Include all non-aggregated columns
-            ->havingRaw('SUM(order_items.price) != payments.amount')
+            ->havingRaw('SUM(order_items.price) > payments.amount')
             ->get();
 
 

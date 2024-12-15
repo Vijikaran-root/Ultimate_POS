@@ -199,11 +199,6 @@ class Cart extends Component {
             text: `Bill Total: ${total}`,
             input: "text",
             inputPlaceholder: "Enter the received amount",
-            inputValidator: (value) => {
-                if (!value || isNaN(value) || value <= 0) {
-                    return "Please enter a valid amount!";
-                }
-            },
             cancelButtonText: "Cancel Pay",
             showCancelButton: true,
             confirmButtonText: "Confirm Pay",
@@ -211,11 +206,6 @@ class Cart extends Component {
             preConfirm: (receivedAmount) => {
                 receivedAmount = parseFloat(receivedAmount);
                 const balance = receivedAmount - total;
-
-                if (balance < 0) {
-                    Swal.showValidationMessage("Insufficient received amount!");
-                    return false;
-                }
 
                 return axios
                     .post("/admin/orders", {
@@ -266,11 +256,12 @@ class Cart extends Component {
                                 className="form-control"
                                 onChange={this.setCustomerId}
                             >
-                                <option value="" disabled selected>
-                                    Select Customer
-                                </option>
                                 {customers.map((cus) => (
-                                    <option key={cus.id} value={cus.id}>
+                                    <option
+                                        selected
+                                        key={cus.id}
+                                        value={cus.id}
+                                    >
                                         {`${cus.first_name} ${cus.last_name}`}
                                     </option>
                                 ))}
