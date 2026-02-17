@@ -38,7 +38,7 @@
                 <tr>
                     <td>{{$product->id}}</td>
                     <td>{{$product->name}}</td>
-                    <td><img class="product-img img-thumbnail" src="{{ Storage::url($product->image) }}" alt=""></td>
+                    <td><img class="product-img img-thumbnail" src="{{ asset($product->image) }}" alt=""></td>
                     <td>{{$product->barcode}}</td>
                     <td>{{config('settings.currency_symbol')}}{{$product->cost}}</td>
                     <td>{{config('settings.currency_symbol')}}{{$product->price}}</td>

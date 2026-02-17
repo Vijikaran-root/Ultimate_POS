@@ -309,7 +309,7 @@ class Cart extends Component {
                                                                 this.handleChangeQty(
                                                                     c.id,
                                                                     event.target
-                                                                        .value
+                                                                        .value,
                                                                 )
                                                             }
                                                         />
@@ -317,7 +317,7 @@ class Cart extends Component {
                                                             className="btn btn-danger btn-sm"
                                                             onClick={() =>
                                                                 this.handleClickDelete(
-                                                                    c.id
+                                                                    c.id,
                                                                 )
                                                             }
                                                         >

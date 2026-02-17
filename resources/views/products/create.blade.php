@@ -58,7 +58,7 @@
                 @enderror
             </div>
             <div class="form-group">
-                <label for="cost">Price</label>
+                <label for="cost">MRP Price</label>
                 <input type="number" name="cost" class="form-control @error('price') is-invalid @enderror" id="cost"
                     placeholder="Enter cost" value="{{ old('cost') }}">
                 @error('cost')
@@ -69,7 +69,7 @@
             </div>
 
             <div class="form-group">
-                <label for="price">Price</label>
+                <label for="price">Selling Price</label>
                 <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" id="price"
                     placeholder="Enter price" value="{{ old('price') }}">
                 @error('price')
